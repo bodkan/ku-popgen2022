@@ -1,0 +1,154 @@
+---
+title: "Simulations in population genetics (lecture)"
+format:
+  revealjs:
+    code-line-numbers: false
+---
+
+```{r, setup}
+library(magrittr)
+
+library(slendr)
+
+set.seed(42)
+```
+
+## Why simulations?
+
+-   Test a method against "the truth".
+
+## What does it mean to simulate a genome?
+
+A chromosome is:
+
+-   a linear sequence of nucleotides
+-   which accumulates mutations in each generation
+
+## How do we "get" a genome in real life?
+
+- A chromosome is a linear sequence of nucleotides.
+- Inherited from generation to generation (maybe with recombination)
+
+# Home-brewed single-locus simulations in R
+
+
+## Single-locus simulation (code)
+
+```{r}
+#| echo: true
+#| results: hide
+#| code-line-numbers: true
+N <- 500 # number of (haploid) individuals
+generations <- 500 # number of generations
+
+# initialize the vector of allele frezuencies
+p_trajectory <- rep(NA, generations)
+p_trajectory[1] <- 0.5
+
+# in each generation...
+for (gen_i in 2:generations) {
+  p_previous <- p_trajectory[gen_i - 1]
+
+  # ... calculate the allele frequency in the next generation ...
+  p_next <- rbinom(1, N, p_previous) / N
+  # ... and save it to the trajectory vector
+  p_trajectory[gen_i] <- p_next
+}
+
+# our final result is here
+p_trajectory
+```
+
+## Single-locus simulation (result)
+
+```{r}
+plot(p_trajectory, type = "l", ylim = c(0, 1), xlab = "generations", ylab = "allele frequency")
+abline(h = p0, lty = 2, col = "red")
+```
+
+## Let's make it a function
+
+```{r}
+#| echo: true
+
+simulate <- function(N, p0, generations) {
+  p_trajectory <- rep(NA, generations)
+  p_trajectory[1] <- 0.5
+
+  for (gen_i in 2:generations) {
+    p_previous <- p_trajectory[gen_i - 1]
+    p_next <- rbinom(1, N, p_previous) / N
+    p_trajectory[gen_i] <- p_next
+  }
+
+  p_trajectory
+}
+```
+
+## Let's run many replicates of this function (N = 10000)
+
+```{r}
+#| echo: true
+#| fig-align: center
+reps <- replicate(20, simulate(N = 10000, p0 = 0.5, generations = 500))
+
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
+
+## Let's run many replicates of this function (N = 5000)
+
+```{r}
+#| echo: true
+#| fig-align: center
+reps <- replicate(20, simulate(N = 5000, p0 = 0.5,generations = 500))
+
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
+
+
+## Let's run many replicates of this function (N = 1000)
+
+```{r}
+#| echo: true
+#| fig-align: center
+reps <- replicate(20, simulate(N = 1000, p0 = 0.5, generations = 500))
+
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
+
+
+## Let's run many replicates of this function (N = 500)
+
+```{r}
+#| echo: true
+#| fig-align: center
+reps <- replicate(20, simulate(N = 500, p0 = 0.5, generations = 500))
+
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
+
+## What are the expected final allele frequencies?
+
+```{r}
+N_values <- c(100, 500, 1000, 2500, 5000, 7500, 10000)
+
+final_frequencies <- lapply(
+  N_values, function(N) {
+    frequencies <- replicate(1000, simulate(N = N, p0 = 0.5, generations = 500))[500, ]
+    density(frequencies)
+  }
+)
+names(final_frequencies) <- paste("N =", N_values)
+
+plot(NA, xlab = "allele frequency", ylab = "density",
+     xlim = c(0, 1), ylim = c(0, max(sapply(final_frequencies, function(x) x$y))))
+mapply(lines, final_frequencies, col=1 : length(final_frequencies))
+
+legend("topright", legend=names(final_frequencies), fill=1:length(final_frequencies))
+```
+
+# msprime
+
+```{python}
+import msprime
+```
