@@ -1,5 +1,5 @@
 ---
-title: "Simulations in population genetics (lecture)"
+title: "Simulations in population genetics"
 format:
   revealjs:
     code-line-numbers: false
@@ -7,6 +7,7 @@ format:
 
 ```{r, setup}
 library(magrittr)
+library(ggplot2)
 
 library(slendr)
 
@@ -32,97 +33,113 @@ A chromosome is:
 # Home-brewed single-locus simulations in R
 
 
-## Single-locus simulation (code)
+## Single-locus simulation
 
 ```{r}
 #| echo: true
 #| results: hide
-#| code-line-numbers: true
-N <- 500 # number of (haploid) individuals
-generations <- 500 # number of generations
+#| code-line-numbers: "|1-3|5-7|9-10|11|13-14|16-18|20"
+N <- 500 # number of (haploid) individuals in the population
+generations <- 500 # number of generations to run the simulation for
+p_start <- 0.5 # initial allele frequency
 
-# initialize the vector of allele frezuencies
-p_trajectory <- rep(NA, generations)
-p_trajectory[1] <- 0.5
+# initialize an (empty) trajectory vector of allele frequencies
+p_traj<- rep(NA, generations)
+p_traj[1] <- p_start
 
 # in each generation...
 for (gen_i in 2:generations) {
-  p_previous <- p_trajectory[gen_i - 1]
+  p_current <- p_traj[gen_i - 1] # get the current frequency
 
   # ... calculate the allele frequency in the next generation ...
-  p_next <- rbinom(1, N, p_previous) / N
+  p_next <- rbinom(1, N, p_current) / N
+
   # ... and save it to the trajectory vector
-  p_trajectory[gen_i] <- p_next
+  p_traj[gen_i] <- p_next
 }
 
-# our final result is here
-p_trajectory
+p_traj
 ```
 
-## Single-locus simulation (result)
+## Single-locus simulation
 
 ```{r}
-plot(p_trajectory, type = "l", ylim = c(0, 1), xlab = "generations", ylab = "allele frequency")
-abline(h = p0, lty = 2, col = "red")
+#| echo: true
+#| code-fold: true
+plot(p_traj, type = "l", ylim = c(0, 1),
+     xlab = "generations", ylab = "allele frequency")
+abline(h = p_start, lty = 2, col = "red")
 ```
 
 ## Let's make it a function
 
+**Input:** $N$, $p_0$ and the number of generations
+
+**Output:** allele frequency trajectory vector
+
 ```{r}
 #| echo: true
 
-simulate <- function(N, p0, generations) {
-  p_trajectory <- rep(NA, generations)
-  p_trajectory[1] <- 0.5
+simulate <- function(N, p_start, generations) {
+  # initialize an (empty) trajectory vector of allele frequencies
+  p_traj<- rep(NA, generations)
+  p_traj[1] <- p_start
 
+  # in each generation...
   for (gen_i in 2:generations) {
-    p_previous <- p_trajectory[gen_i - 1]
-    p_next <- rbinom(1, N, p_previous) / N
-    p_trajectory[gen_i] <- p_next
+    p_current <- p_traj[gen_i - 1] # get the current frequency
+    # ... calculate the allele frequency in the next generation ...
+    p_next <- rbinom(1, N, p_current) / N
+    # ... and save it to the trajectory vector
+    p_traj[gen_i] <- p_next
   }
 
-  p_trajectory
+  p_traj
 }
 ```
 
-## Let's run many replicates of this function (N = 10000)
+## **$N$ = 10000**, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| echo: true
 #| fig-align: center
-reps <- replicate(20, simulate(N = 10000, p0 = 0.5, generations = 500))
+#| code-fold: true
+reps <- replicate(20, simulate(N = 10000, p_start = 0.5, generations = 1000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
 
-## Let's run many replicates of this function (N = 5000)
+## **$N$ = 5000**, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| echo: true
 #| fig-align: center
-reps <- replicate(20, simulate(N = 5000, p0 = 0.5,generations = 500))
-
-matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
-```
-
-
-## Let's run many replicates of this function (N = 1000)
-
-```{r}
-#| echo: true
-#| fig-align: center
-reps <- replicate(20, simulate(N = 1000, p0 = 0.5, generations = 500))
+#| code-fold: true
+reps <- replicate(20, simulate(N = 5000, p_start = 0.5, generations = 1000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
 
 
-## Let's run many replicates of this function (N = 500)
+## **$N$ = 1000**, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| echo: true
 #| fig-align: center
-reps <- replicate(20, simulate(N = 500, p0 = 0.5, generations = 500))
+#| code-fold: true
+reps <- replicate(20, simulate(N = 1000, p_start = 0.5, generations = 1000))
+
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
+
+
+## **$N$ = 500**, $p_0 = 0.5$ (20 replicates)
+
+```{r}
+#| echo: true
+#| fig-align: center
+#| code-fold: true
+reps <- replicate(20, simulate(N = 500, p_start = 0.5, generations = 1000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
@@ -130,25 +147,73 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 ## What are the expected final allele frequencies?
 
 ```{r}
+#| eval: false
 N_values <- c(100, 500, 1000, 2500, 5000, 7500, 10000)
 
 final_frequencies <- lapply(
   N_values, function(N) {
-    frequencies <- replicate(1000, simulate(N = N, p0 = 0.5, generations = 500))[500, ]
-    density(frequencies)
+    data.frame(
+      Ne = N,
+      f = replicate(10000, simulate(N = N, p_start = 0.5, generations = 1000))[1000, ]
+    )
   }
-)
-names(final_frequencies) <- paste("N =", N_values)
+) %>% do.call(rbind, .)
 
-plot(NA, xlab = "allele frequency", ylab = "density",
-     xlim = c(0, 1), ylim = c(0, max(sapply(final_frequencies, function(x) x$y))))
-mapply(lines, final_frequencies, col=1 : length(final_frequencies))
+ggplot(final_frequencies) +
+  geom_density(aes(f, color = factor(Ne), group = Ne)) +
+  labs(x = "allele frequency")
+```
 
-legend("topright", legend=names(final_frequencies), fill=1:length(final_frequencies))
+# SLiM
+
+## What is SLiM?
+
+- Extremely popular forward-in-time simulator
+- Programmable! Simulations written in its own language:
+  - A little bit like R but not _really_ R
+  - Infinitely powerful but can be daunting for newbies
+- Huge library of functions for many scenarios:
+  - Demography (splits, migrations, population size changes)
+  - Mating systems (sex ratios, sex-biased gene flow)
+  - Selection, quantitative traits, continuous space, ...
+
+## Simple neutral simulation in SLiM
+
+```{bash}
+cat script01.slim
+```
+
+## Simple neutral simulation in SLiM
+
+```{bash}
+#| results: hide
+
+slim script01.slim
+```
+
+```{bash}
+head -n20 /tmp/slim01.vcf
+```
+
+
+## Nore complex neutral simulation in SLiM
+
+```{bash}
+cat script02.slim
 ```
 
 # msprime
 
+## What is msprime?
+
+- A Python module for programming coalescent simulations.
+- **Extremely efficient**
+- Tightly linked with [_tskit_](https://tskit.dev/tskit/docs/stable/introduction.html)
+
+## 
 ```{python}
 import msprime
+
+msprime.sim_ancestry(10)
 ```
+

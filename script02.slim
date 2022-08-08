@@ -1,0 +1,19 @@
+initialize() {
+    initializeMutationRate(1e-8);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    // g1 genomic element type uses m1 mutation type for all mutations
+    initializeGenomicElementType("g1", m1, 1.0);
+    // 1Mb chromosome with uniform recombination
+    initializeGenomicElement(g1, 0, 999999);
+    initializeRecombinationRate(1e-8);
+}
+
+1 { sim.addSubpop("p1", 1000); }
+100 { sim.addSubpopSplit("p2", 500, p1); }
+500 { p2.setMigrationRates(p1, 0.1); }
+
+1000 late() {
+    p1_subset = sample(p1.individuals, 10);
+    p2_subset = sample(p2.individuals, 10);
+    c(p1_subset, p2_subset).genomes.outputVCF("/tmp/slim01.vcf");
+}
