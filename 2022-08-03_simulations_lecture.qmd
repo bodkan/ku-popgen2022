@@ -2,17 +2,43 @@
 title: "Simulations in population genetics"
 format:
   revealjs:
+    echo: true
     code-line-numbers: false
+    fig-align: center
 ---
 
 ```{r, setup}
 library(magrittr)
 library(ggplot2)
+library(parallel)
+library(MASS)
+library(forcats)
 
 library(slendr)
 
 set.seed(42)
 ```
+
+
+## Why simulations?
+
+:::: {.columns}
+
+::: {.column width="70%"}
+
+> Many problems in population genetics cannot be solved by a mathematician, no matter how gifted. [It] is already clear that computer methods are very powerful. This is good. It [...] permits people with limited mathematical knowledge to work on important problems [...]
+
+:::
+
+::: {.column width="30%"}
+
+![](https://upload.wikimedia.org/wikipedia/en/3/3d/James_F_Crow.jpg)
+
+[James F. Crow](https://en.wikipedia.org/wiki/James_F._Crow)
+
+:::
+
+::::
 
 ## Why simulations?
 
@@ -36,7 +62,6 @@ A chromosome is:
 ## Single-locus simulation
 
 ```{r}
-#| echo: true
 #| results: hide
 #| code-line-numbers: "|1-3|5-7|9-10|11|13-14|16-18|20"
 N <- 500 # number of (haploid) individuals in the population
@@ -61,10 +86,9 @@ for (gen_i in 2:generations) {
 p_traj
 ```
 
-## Single-locus simulation
+## Single-locus simulation (**$N$ = 500**, $p_0 = 0.5$)
 
 ```{r}
-#| echo: true
 #| code-fold: true
 plot(p_traj, type = "l", ylim = c(0, 1),
      xlab = "generations", ylab = "allele frequency")
@@ -78,8 +102,6 @@ abline(h = p_start, lty = 2, col = "red")
 **Output:** allele frequency trajectory vector
 
 ```{r}
-#| echo: true
-
 simulate <- function(N, p_start, generations) {
   # initialize an (empty) trajectory vector of allele frequencies
   p_traj<- rep(NA, generations)
@@ -101,9 +123,8 @@ simulate <- function(N, p_start, generations) {
 ## **$N$ = 10000**, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
-#| echo: true
-#| fig-align: center
 #| code-fold: true
+#| fig-align: center
 reps <- replicate(20, simulate(N = 10000, p_start = 0.5, generations = 1000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
@@ -112,9 +133,8 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 ## **$N$ = 5000**, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
-#| echo: true
-#| fig-align: center
 #| code-fold: true
+#| fig-align: center
 reps <- replicate(20, simulate(N = 5000, p_start = 0.5, generations = 1000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
@@ -124,9 +144,8 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 ## **$N$ = 1000**, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
-#| echo: true
-#| fig-align: center
 #| code-fold: true
+#| fig-align: center
 reps <- replicate(20, simulate(N = 1000, p_start = 0.5, generations = 1000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
@@ -136,9 +155,8 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 ## **$N$ = 500**, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
-#| echo: true
-#| fig-align: center
 #| code-fold: true
+#| fig-align: center
 reps <- replicate(20, simulate(N = 500, p_start = 0.5, generations = 1000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
@@ -148,21 +166,67 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 
 ```{r}
 #| eval: false
-N_values <- c(100, 500, 1000, 2500, 5000, 7500, 10000)
+#| code-fold: true
+#| fig-align: center
+p_start <- 0.5
+N <- 10000
+factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
 
-final_frequencies <- lapply(
-  N_values, function(N) {
+final_frequencies <- parallel::mclapply(
+  seq_along(factors), function(i) {
+    f <- factors[i]
+    t <- as.integer(N * f)
+    # get complete trajectories as a matrix (each column a single trajectory)
+    reps <- replicate(100000, simulate(N = N, p_start = p_start, generations = t))
+    # only keep the last slice of the matrix with the final frequencies
     data.frame(
-      Ne = N,
-      f = replicate(10000, simulate(N = N, p_start = 0.5, generations = 1000))[1000, ]
+      t = sprintf("t = %s * N", f),
+      freq = reps[t, ] %>% .[. > 0 & . < 1]
     )
-  }
+  },
+  mc.cores = parallel::detectCores()
 ) %>% do.call(rbind, .)
 
 ggplot(final_frequencies) +
-  geom_density(aes(f, color = factor(Ne), group = Ne)) +
-  labs(x = "allele frequency")
+  geom_density(aes(freq, color = fct_rev(fct_relevel(t, sprintf("t = %s * N", factors))))) +
+  labs(x = "allele frequency") +
+  guides(color = guide_legend(sprintf("time t\n[assuming\nN = %s]", N)))
 ```
+
+
+```{r}
+#| eval: false
+#| code-fold: true
+#| fig-align: center
+p_start <- 0.5
+N <- 10000
+factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
+
+final_frequencies <- parallel::mclapply(
+  seq_along(factors), function(i) {
+    f <- factors[i]
+    t <- as.integer(N * f)
+    # get complete trajectories as a matrix (each column a single trajectory)
+    reps <- replicate(100000, simulate(N = N, p_start = p_start, generations = t))
+    # only keep the last slice of the matrix with the final frequencies
+    data.frame(
+      t = sprintf("t = %s * N", f),
+      freq = reps[t, ] %>% .[. > 0 & . < 1]
+    )
+  },
+  mc.cores = parallel::detectCores()
+) %>% do.call(rbind, .)
+
+ggplot(final_frequencies) +
+  geom_density(aes(freq, color = fct_rev(fct_relevel(t, sprintf("t = %s * N", factors))))) +
+  labs(x = "allele frequency") +
+  guides(color = guide_legend(sprintf("time t\n[assuming\nN = %s]", N)))
+```
+
+
+# Exercise #1
+
+Let's add selection!
 
 # SLiM
 
@@ -180,18 +244,21 @@ ggplot(final_frequencies) +
 ## Simple neutral simulation in SLiM
 
 ```{bash}
+#| echo: false
 cat script01.slim
 ```
 
 ## Simple neutral simulation in SLiM
 
 ```{bash}
+#| echo: false
 #| results: hide
 
 slim script01.slim
 ```
 
 ```{bash}
+#| echo: false
 head -n20 /tmp/slim01.vcf
 ```
 
@@ -199,6 +266,7 @@ head -n20 /tmp/slim01.vcf
 ## Nore complex neutral simulation in SLiM
 
 ```{bash}
+#| echo: false
 cat script02.slim
 ```
 
@@ -217,3 +285,82 @@ import msprime
 msprime.sim_ancestry(10)
 ```
 
+# _slendr_
+
+## Why a new package?
+
+- Spatial simulations!
+
+
+## Creating a population
+
+A name, size and the time of appearance must be given:
+
+```{r}
+pop1 <- population("pop1", N = 1000, time = 1)
+```
+
+
+. . .
+
+Typing an object prints out a brief summary in the R console:
+
+```{r}
+pop1
+```
+
+## Programming population splits
+
+```{r}
+pop2 <- population("pop2", N = 1000, time = 50, parent = pop1)
+pop2
+```
+
+## Scheduling resize events
+
+```{r}
+pop2 <- resize(pop2, N = 100, how = "step", time = 500)
+pop2
+```
+
+. . .
+
+We can also use pipe-able interface to do this in one go
+
+```{r}
+pop2 <- population("pop2", N = 1000, time = 50, parent = pop1) %>%
+  resize(N = 100, how = "step", time = 500)
+pop2
+```
+
+
+# Example #2
+
+## Try to program the following model in _slendr_
+
+```{r}
+#| echo: false
+
+# create the ancestor of everyone and a chimpanzee outgroup
+# (we set both N = 1 to reduce the computational time for this model)
+chimp <- population("CH", time = 6.5e6, N = 5000)
+
+# two populations of anatomically modern humans: Africans and Europeans
+afr <- population("AFR", parent = chimp, time = 6e6, N = 10000)
+eur <- population("EUR", parent = afr, time = 70e3, N = 5000) %>%
+  resize(N = 20000, how = "exponential", time = 5000, end = 0)
+
+# Neanderthal population splitting at 600 ky ago from modern humans
+# (becomes extinct by 40 ky ago)
+nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
+
+# 3% Neanderthal introgression into Europeans between 55-50 ky ago
+gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 45000)
+
+model <- compile_model(
+  populations = list(chimp, nea, afr, eur), gene_flow = gf,
+  generation_time = 30
+)
+
+plot_model(model, log = TRUE)
+```
