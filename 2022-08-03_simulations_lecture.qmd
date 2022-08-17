@@ -5,6 +5,7 @@ format:
     echo: true
     code-line-numbers: false
     fig-align: center
+    slide-number: true
 ---
 
 ```{r, setup}
@@ -19,30 +20,25 @@ library(slendr)
 set.seed(42)
 ```
 
+# 
 
-## Why simulations?
-
-:::: {.columns}
-
+::: columns
 ::: {.column width="70%"}
-
-> Many problems in population genetics cannot be solved by a mathematician, no matter how gifted. [It] is already clear that computer methods are very powerful. This is good. It [...] permits people with limited mathematical knowledge to work on important problems [...]
-
+> Many problems in population genetics cannot be solved by a mathematician, no matter how gifted. \[It\] is already clear that computer methods are very powerful. This is good. It \[...\] **permits people with limited mathematical knowledge to work on important problems** \[...\]
 :::
 
 ::: {.column width="30%"}
-
-![](https://upload.wikimedia.org/wikipedia/en/3/3d/James_F_Crow.jpg)
+![](images/crow.jpeg)
 
 [James F. Crow](https://en.wikipedia.org/wiki/James_F._Crow)
-
 :::
-
-::::
+:::
 
 ## Why simulations?
 
--   Test a method against "the truth".
+-   Intuition for behavior of popgen statistics in various scenarios
+-   Fitting model parameters against empirical data (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
+-   Grand truth for testing and development of statistical methods
 
 ## What does it mean to simulate a genome?
 
@@ -53,11 +49,10 @@ A chromosome is:
 
 ## How do we "get" a genome in real life?
 
-- A chromosome is a linear sequence of nucleotides.
-- Inherited from generation to generation (maybe with recombination)
+-   A chromosome is a linear sequence of nucleotides.
+-   Inherited from generation to generation (maybe with recombination)
 
 # Home-brewed single-locus simulations in R
-
 
 ## Single-locus simulation
 
@@ -74,10 +69,10 @@ p_traj[1] <- p_start
 
 # in each generation...
 for (gen_i in 2:generations) {
-  p_current <- p_traj[gen_i - 1] # get the current frequency
+  p <- p_traj[gen_i - 1] # get the current frequency
 
   # ... calculate the allele frequency in the next generation ...
-  p_next <- rbinom(1, N, p_current) / N
+  p_next <- rbinom(1, N, p) / N
 
   # ... and save it to the trajectory vector
   p_traj[gen_i] <- p_next
@@ -86,7 +81,7 @@ for (gen_i in 2:generations) {
 p_traj
 ```
 
-## Single-locus simulation (**$N$ = 500**, $p_0 = 0.5$)
+## Single-locus simulation ($N$ = 500, $p_0 = 0.5$)
 
 ```{r}
 #| code-fold: true
@@ -109,9 +104,9 @@ simulate <- function(N, p_start, generations) {
 
   # in each generation...
   for (gen_i in 2:generations) {
-    p_current <- p_traj[gen_i - 1] # get the current frequency
+    p <- p_traj[gen_i - 1] # get the current frequency
     # ... calculate the allele frequency in the next generation ...
-    p_next <- rbinom(1, N, p_current) / N
+    p_next <- rbinom(1, N, p) / N
     # ... and save it to the trajectory vector
     p_traj[gen_i] <- p_next
   }
@@ -120,54 +115,62 @@ simulate <- function(N, p_start, generations) {
 }
 ```
 
-## **$N$ = 10000**, $p_0 = 0.5$ (20 replicates)
+## $N$ = 500, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| code-fold: true
 #| fig-align: center
-reps <- replicate(20, simulate(N = 10000, p_start = 0.5, generations = 1000))
+reps <- replicate(20, simulate(N = 500, p_start = 0.5, generations = 2000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
 
-## **$N$ = 5000**, $p_0 = 0.5$ (20 replicates)
+## $N$ = 1000, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| code-fold: true
 #| fig-align: center
-reps <- replicate(20, simulate(N = 5000, p_start = 0.5, generations = 1000))
+reps <- replicate(20, simulate(N = 1000, p_start = 0.5, generations = 2000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
 
-
-## **$N$ = 1000**, $p_0 = 0.5$ (20 replicates)
+## $N$ = 5000, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| code-fold: true
 #| fig-align: center
-reps <- replicate(20, simulate(N = 1000, p_start = 0.5, generations = 1000))
+reps <- replicate(20, simulate(N = 5000, p_start = 0.5, generations = 2000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
 
-
-## **$N$ = 500**, $p_0 = 0.5$ (20 replicates)
+## $N$ = 10000, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| code-fold: true
 #| fig-align: center
-reps <- replicate(20, simulate(N = 500, p_start = 0.5, generations = 1000))
+reps <- replicate(50, simulate(N = 10000, p_start = 0.5, generations = 20000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
 
-## What are the expected final allele frequencies?
+## $N$ = 10000, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
 #| eval: false
 #| code-fold: true
 #| fig-align: center
+factors <- fractions(c(2, 1/2, 1/5, 1/10))
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+abline(v = 10000 * factors, lwd = 5)
+```
+
+## Expected allele frequency distribution
+
+```{r, eval = !file.exists("/tmp/final_frequencies.rds")}
+#| eval: false
+#| echo: false
 p_start <- 0.5
 N <- 10000
 factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
@@ -177,69 +180,198 @@ final_frequencies <- parallel::mclapply(
     f <- factors[i]
     t <- as.integer(N * f)
     # get complete trajectories as a matrix (each column a single trajectory)
-    reps <- replicate(100000, simulate(N = N, p_start = p_start, generations = t))
+    reps <- replicate(10000, simulate(N = N, p_start = p_start, generations = t))
     # only keep the last slice of the matrix with the final frequencies
     data.frame(
       t = sprintf("t = %s * N", f),
-      freq = reps[t, ] %>% .[. > 0 & . < 1]
+      freq = reps[t, ]
     )
   },
   mc.cores = parallel::detectCores()
 ) %>% do.call(rbind, .)
+final_frequencies$t <- fct_rev(fct_relevel(final_frequencies$t, sprintf("t = %s * N", factors)))
 
-ggplot(final_frequencies) +
-  geom_density(aes(freq, color = fct_rev(fct_relevel(t, sprintf("t = %s * N", factors))))) +
-  labs(x = "allele frequency") +
-  guides(color = guide_legend(sprintf("time t\n[assuming\nN = %s]", N)))
+saveRDS(final_frequencies, "/tmp/final_frequencies.rds")
 ```
 
+::: columns
+::: {.column width="50%"}
+```{r}
+#| eval: false
+#| echo: false
+#| fig-align: center
+#| fig-height: 10
+#| fig-width: 10
+final_frequencies <- readRDS("/tmp/final_frequencies.rds")
+final_frequencies$t <- final_frequencies$t
+
+final_frequencies %>% .[.$freq > 0 & .$freq < 1, ] %>%
+ggplot() +
+  geom_histogram(aes(freq, y = ..density.., fill = t), position = "identity", bins = 100, alpha = 0.75) +
+  labs(x = "allele frequency") +
+  coord_cartesian(ylim = c(0, 3)) +
+  facet_grid(t ~ .) +
+  guides(fill = guide_legend(sprintf("time since\nthe start\n[assuming\nN = %s]", N))) +
+  theme_minimal() +
+  theme(strip.text.y = element_blank(),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 15))
+```
+:::
+
+::: {.column width="50%"}
+::: fragment
+![*"Diffusion Models in Population Genetics"*, [Kimura (1964)](https://www.jstor.org/stable/3211856#metadata_info_tab_contents)](images/kimura.jpeg)
+:::
+:::
+:::
+
+# Bonus exercise
+
+If you're bored later at home...
+
+## Let's add selection!
+
+Write `simulate_selection(s, N, p_start, generations)`, where `s` is the selection coefficient.
 
 ```{r}
 #| eval: false
-#| code-fold: true
-#| fig-align: center
-p_start <- 0.5
-N <- 10000
-factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
+simulate_selection <- function(s, N, p_start, generations) {
+  # we assume additivity
+  h <- 1/2
 
-final_frequencies <- parallel::mclapply(
-  seq_along(factors), function(i) {
-    f <- factors[i]
-    t <- as.integer(N * f)
-    # get complete trajectories as a matrix (each column a single trajectory)
-    reps <- replicate(100000, simulate(N = N, p_start = p_start, generations = t))
-    # only keep the last slice of the matrix with the final frequencies
-    data.frame(
-      t = sprintf("t = %s * N", f),
-      freq = reps[t, ] %>% .[. > 0 & . < 1]
+  # initialize an (empty) trajectory vector of allele frequencies
+  p_traj<- rep(NA, generations)
+  p_traj[1] <- p_start
+
+  # in each generation...
+  for (gen_i in 2:generations) {
+    p <- p_traj[gen_i - 1] # get the current frequency
+
+    fitnesses <- c(
+      p ^ 2           * (1 + s),
+      2 * p * (1 - p) * (1 + h * s),
+      (1 - p) ^ 2     * 1
     )
-  },
-  mc.cores = parallel::detectCores()
-) %>% do.call(rbind, .)
+    p_next <- (fitnesses[1] + h * fitnesses[2]) / mean(fitnesses)
 
-ggplot(final_frequencies) +
-  geom_density(aes(freq, color = fct_rev(fct_relevel(t, sprintf("t = %s * N", factors))))) +
-  labs(x = "allele frequency") +
-  guides(color = guide_legend(sprintf("time t\n[assuming\nN = %s]", N)))
+    if (p_next >= 1) p_next <- 1
+
+    # ... calculate the allele frequency in the next generation ...
+    p_next <- rbinom(1, N, p_next) / N
+
+    # ... and save it to the trajectory vector
+    p_traj[gen_i] <- p_next
+  }
+
+  p_traj
+}
 ```
 
+```{r}
+deterministic_selection <- function(t, p_start, s) {
+  p_start * exp(s * t / 2) / (p_start * exp(s * t / 2) + (1 - p_start))
+}
+```
 
-# Exercise #1
+```{r}
+deterministic_traj <- sapply(1:1000, deterministic_selection, p_start = 0.01, s = 0.1)
 
-Let's add selection!
+plot(deterministic_traj, type = "l")
+```
+
+(Let's assume additive selection: $h = \frac{1}{2}$).
+
+## 
+
+:::: columns
+
+::: {.column width="40%"}
+
+<center>
+
+![](images/feynman.jpeg)
+
+[Richard Feynman](https://en.wikipedia.org/wiki/Richard_Feynman)
+
+</center>
+
+:::
+
+::: {.column width="60%"}
+
+![](images/feynman_quote.png)
+
+:::
+
+::::
+
+# {background-image="images/montypython.jpeg"}
+
+<h1 color="white" style="background-color: lightgray;vertical-align: bottom;">But now for something completely different...</h1>
+
+## There are many pieces of simulation software
+
+The most famous and widely used are ([SLiM](https://messerlab.org/slim/)) and ([msprime](https://tskit.dev/msprime/docs/stable/intro.html)).
+
+::: fragment
+They are both extremely powerful...
+:::
+
+::: fragment
+... but they require a lot of programming knowledge and quite a lot of code to write non-trivial simulations (without bugs).
+:::
+
+::: fragment
+We will explore simulation concepts using [*slendr*](http://www.slendr.net), a convenient R interface to both SLiM and msprime (no real programming needed).
+:::
 
 # SLiM
 
-## What is SLiM?
+## 
 
-- Extremely popular forward-in-time simulator
-- Programmable! Simulations written in its own language:
-  - A little bit like R but not _really_ R
-  - Infinitely powerful but can be daunting for newbies
-- Huge library of functions for many scenarios:
-  - Demography (splits, migrations, population size changes)
-  - Mating systems (sex ratios, sex-biased gene flow)
-  - Selection, quantitative traits, continuous space, ...
+:::: {.columns}
+
+::: {.column width="60%"}
+
+<h2>What is SLiM?</h2>
+
+::: {.fragment}
+- **Forward-time simulator**
+:::
+
+::: {.fragment}
+- It's fully programmable!
+:::
+
+::: {.fragment}
+- Massive library of functions for:
+  - Demographic events
+  - Various mating systems
+  - Selection, quantitative traits, ...
+:::
+
+::: {.fragment}
+- \> 700 pages long [manual](https://github.com/MesserLab/SLiM/releases/download/v3.7.1/SLiM_Manual.pdf)!
+:::
+
+:::
+
+::: {.column width="40%"}
+
+<center>![Modified from Alex Drummond](images/sim_sketches.001.png){width="100%"}</center>
+
+:::
+
+::::
+
+## SLiMgui -- [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) for SLiM
+
+<center>![](images/slimgui.png)</center>
 
 ## Simple neutral simulation in SLiM
 
@@ -247,21 +379,6 @@ Let's add selection!
 #| echo: false
 cat script01.slim
 ```
-
-## Simple neutral simulation in SLiM
-
-```{bash}
-#| echo: false
-#| results: hide
-
-slim script01.slim
-```
-
-```{bash}
-#| echo: false
-head -n20 /tmp/slim01.vcf
-```
-
 
 ## Nore complex neutral simulation in SLiM
 
@@ -272,25 +389,90 @@ cat script02.slim
 
 # msprime
 
-## What is msprime?
+##
 
-- A Python module for programming coalescent simulations.
-- **Extremely efficient**
-- Tightly linked with [_tskit_](https://tskit.dev/tskit/docs/stable/introduction.html)
+:::: .{columns}
 
-## 
+::: {.column width="60%"}
+<h2>What is [msprime](https://tskit.dev/msprime/docs/stable/intro.html)?</h2>
+
+:: {.fragment}
+- A Python module for programming **coalescent simulations**
+::
+
+:: {.fragment}
+- Extremely efficient (whole-genome, whole-population simulations)
+::
+
+:: {.fragment}
+- Even if you know Python very well, can feel a bit verbose to write
+::
+
+:: {.fragment}
+- Tightly linked with [*tskit*](https://tskit.dev/tskit/docs/stable/introduction.html) for tree-sequence processing (more on tree sequences later...)
+::
+
+:::
+
+::: {.column width="40%"}
+<center>![Modified from Alex Drummond](images/sim_sketches.002.png){width="85%"}</center>
+:::
+
+::::
+
+
+## Example Python model
+
 ```{python}
 import msprime
 
 msprime.sim_ancestry(10)
 ```
 
-# _slendr_
+# *slendr*
 
 ## Why a new package?
 
-- Spatial simulations!
+Spatial simulations!
 
+![](animation.gif)
+
+## Why a new package? #2
+
+-   Most researchers are not expert programmers
+
+-   All but the most trivial simulations require lots of code
+
+-   Even worse, many scenarios need to be evaluated across different parameter values
+
+-   90% of demographic simulations are the same!
+
+    -   create a bunch of populations with split times and population sizes
+
+    -   specify how they should mix
+
+    -   save output in a convenient format (VCF, EIGENSTRAT, genotype tables)
+
+-   This leads to huge amount of unnecessary code duplication
+
+## Let's get started
+
+```{r}
+library(slendr)
+```
+
+If you get a message about missing Python dependencies, run:
+
+```{r}
+#| eval: false
+setup_env()
+```
+
+To double check that everything is setup correctly, run:
+
+```{r}
+check_env()
+```
 
 ## Creating a population
 
@@ -300,10 +482,11 @@ A name, size and the time of appearance must be given:
 pop1 <- population("pop1", N = 1000, time = 1)
 ```
 
+ 
 
 . . .
 
-Typing an object prints out a brief summary in the R console:
+Typing an object prints out a summary in the R console:
 
 ```{r}
 pop1
@@ -311,56 +494,198 @@ pop1
 
 ## Programming population splits
 
+Split is indicated via the `parent = <pop>` argument:
+
 ```{r}
 pop2 <- population("pop2", N = 1000, time = 50, parent = pop1)
+```
+
+ 
+
+The split is reported in the "historical summary":
+
+```{r}
 pop2
 ```
 
 ## Scheduling resize events
 
+This is done with the function `resize()`:
+
 ```{r}
 pop2 <- resize(pop2, N = 100, how = "step", time = 500)
-pop2
 ```
 
 . . .
 
-We can also use pipe-able interface to do this in one go
+We can use a "tidyverse-style" interface to do this in one go:
 
 ```{r}
-pop2 <- population("pop2", N = 1000, time = 50, parent = pop1) %>%
+#| code-line-numbers: "|2|3"
+pop2 <-
+  population("pop2", N = 1000, time = 50, parent = pop1) %>%
   resize(N = 100, how = "step", time = 500)
+```
+
+. . .
+
+```{r}
 pop2
 ```
 
+## Gene flow events
 
-# Example #2
-
-## Try to program the following model in _slendr_
+Gene flow is programmed using the `gene_flow()` function:
 
 ```{r}
-#| echo: false
+gf <- gene_flow(from = pop1, to = pop2, start = 500, end = 600, rate = 0.13)
+```
 
-# create the ancestor of everyone and a chimpanzee outgroup
-# (we set both N = 1 to reduce the computational time for this model)
-chimp <- population("CH", time = 6.5e6, N = 5000)
+Multiple gene-flow events can be gathered in a list:
 
-# two populations of anatomically modern humans: Africans and Europeans
+```{r}
+gf <- list(
+  gene_flow(from = pop1, to = pop2, start = 500, end = 600, rate = 0.13),
+  gene_flow(from = pop2, to = pop1, start = 700, end = 750, rate = 0.1)
+)
+```
+
+## Model compilation
+
+```{r}
+#| code-line-numbers: "|1-6|8|10-13"
+o <- population("o", time = 1, N = 100)
+c <- population("c", time = 2500, N = 500, parent = o)
+a <- population("a", time = 3000, N = 2000, parent = c)
+b <- population("b", time = 3500, N = 5000, parent = a)
+x1 <- population("x1", time = 3800, N = 8000, parent = c)
+x2 <- population("x2", time = 4000, N = 10000, parent = x1)
+
+gf <- gene_flow(from = b, to = x1, start = 5100, end = 5400, rate = 0.1)
+
+model <- compile_model(
+  populations = list(a, b, x1, x2, c, o), gene_flow = gf,
+  generation_time = 1, simulation_length = 7000
+)
+```
+
+## Model visualization
+
+```{r}
+#| output-location: fragment
+#| fig-width: 7
+#| fig-align: center
+plot_model(model, proportions = TRUE)
+```
+
+## Simulating data
+
+*slendr* has two simulation engines already built-in:
+
+-   SLiM engine
+-   msprime engine
+
+<center>**You don't have to write msprime/SLiM code!**</center>
+
+::: fragment
+ 
+
+```{r, eval = FALSE}
+msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
+```
+
+ 
+
+<center>(We won't be working with the SLiM engine here.)</center>
+:::
+
+# Exercise #2
+
+## Try to program the following model in *slendr*
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show a solution"
+
+chimp <- population("CH", time = 7e6, N = 10000)
+
 afr <- population("AFR", parent = chimp, time = 6e6, N = 10000)
-eur <- population("EUR", parent = afr, time = 70e3, N = 5000) %>%
-  resize(N = 20000, how = "exponential", time = 5000, end = 0)
+eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
 
-# Neanderthal population splitting at 600 ky ago from modern humans
-# (becomes extinct by 40 ky ago)
-nea <- population("NEA", parent = afr, time = 600e3, N = 1000, remove = 40e3)
+nea <- population("NEA", parent = afr, time = 700e3, N = 1000)
 
-# 3% Neanderthal introgression into Europeans between 55-50 ky ago
-gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 55000, end = 45000)
+gf <- gene_flow(from = nea, to = eur, rate = 0.03, start = 50000, end = 40000)
 
 model <- compile_model(
   populations = list(chimp, nea, afr, eur), gene_flow = gf,
   generation_time = 30
 )
-
-plot_model(model, log = TRUE)
 ```
+
+```{r}
+#| echo: false
+#| fig-align: center
+title <- theme(plot.title = element_text(size=22))
+
+cowplot::plot_grid(
+  plot_model(model) + ggtitle("Normal time scale") + title,
+  plot_model(model, log = TRUE, proportions = TRUE) + ggtitle("Time on the log-scale") + title
+)
+```
+
+<center>(Don't run the simulation with `msprime()` just yet, just visualize it for now with `plot_model()`.)</center>
+
+## Parameter values
+
+-   "CH" outgroup population at time 7 Mya
+
+-   "AFR" population splitting from the "CH" at 6 Mya
+
+-   "NEA" population splitting from the "AFR" at 600 kya
+
+-   "EUR" population splitting from the "AFR" at 70 kya
+
+-   gene flow from "NEA" to "EUR" at 3% over 50-40 kya
+
+# The output of a *slendr* simulation is a **tree sequence**
+
+## What is a tree sequence?
+
+![](tree_sequence_diagram.png)
+
+-   A record of full genetic ancestry of a set of samples
+-   An encoding of DNA sequence carried by those samples
+-   An efficient analysis framework
+
+## What we usually have
+
+<center>![](vcf_screenshot.png){width="90%"}</center>
+
+## What we usually *want*
+
+A (full) representation of the history of all of our samples:
+
+<center>![](tree_sequence_diagram.png)</center>
+
+::: fragment
+<center>... and this is exactly what tree sequences give us.</center>
+:::
+
+## Simulating a tree-sequence output
+
+By default, `msprime()` runner function automatically loads the tree-sequence that the simulation produced in the background:
+
+```{r}
+ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
+```
+
+## tskit Python module
+
+## R interface to tskit
+
+# Bonus exercise
+
+## Try to implement something relevant for your work
+
+-   Program a demographic model for your species of interest
+-   Compute a statistic whose value you "know" (diversity? f4-statistic? divergence?) and try to replicate it
