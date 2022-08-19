@@ -1,0 +1,29 @@
+initialize() {
+    // create a neutral mutation type
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    // initialize 1Mb segment
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 999999);
+    // set mutation rate and recombination rate of the segment
+    initializeMutationRate(1e-8);
+    initializeRecombinationRate(1e-8);
+}
+
+// create an ancestral population p1 of 10000 diploid individuals
+1 early() { sim.addSubpop("p1", 10000); }
+
+// in generation 1000, create two daughter populations p2 and p3
+1000 early() {
+    sim.addSubpopSplit("p2", 5000, p1);
+    sim.addSubpopSplit("p3", 1000, p1);
+}
+
+// in generation 10000, stop the simulation and save 100 individuals
+// from p2 and p3 to a VCF file
+10000 late() {
+    p2_subset = sample(p2.individuals, 100);
+    p3_subset = sample(p3.individuals, 100);
+    c(p2_subset, p3_subset).genomes.outputVCF("/tmp/slim_output.vcf.gz");
+    sim.simulationFinished();
+    catn("DONE!");
+}
