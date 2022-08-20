@@ -466,7 +466,15 @@ set.seed(42)
 
 #
 
-<center>![](images/slendr_logo.png){width="30%"}</center>
+<center>
+
+![](images/slendr_logo.png){width="30%"}
+
+<br>
+
+<h2>[www.slendr.net](www.slendr.net)</h2>
+
+</center>
 
 ## Why a new package? -- spatial simulations!
 
@@ -678,8 +686,6 @@ pop5
 
 ## Last step before simulation: compilation
 
-Now that we have defined our populations and their histories:
-
 <br>
 
 ```{r}
@@ -726,10 +732,9 @@ pop5 <-
 ## Model visualization
 
 ```{r}
-#| output-location: fragment
 #| fig-width: 7
 #| fig-align: center
-plot_model(model, proportions = TRUE)
+plot_model(model)
 ```
 
 
@@ -738,7 +743,7 @@ plot_model(model, proportions = TRUE)
 
 ## Simulating data (finally...)
 
-We have our compiled model, how do we simulate data from it?
+We have the compiled `model`, how do we simulate data?
 
 *slendr* has two simulation engines already built-in:
 
@@ -760,7 +765,7 @@ ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
 . . .
 
 <br>
-<center>(We won't be working with the `slim()` engine here.)</center>
+<center>`ts` is a so-called "tree sequence"</center>
 
 # The output of a *slendr* simulation is a **tree sequence**
 
@@ -794,6 +799,7 @@ A full representation of the history of all of our samples:
 
 ```{r}
 #| fig-align: center
+#| echo: false
 plot_model(model)
 ```
 
@@ -812,7 +818,13 @@ ts <- msprime(
 )
 ```
 
-## Simulating a tree-sequence output
+. . .
+
+<br>
+
+If we type `ts` into an R console, we get...
+
+## ... a tree-sequence content summary
 
 ```{r}
 ts
@@ -827,9 +839,9 @@ ts
 
 <center>
 
-![](images/slendr_tskit.png)
+![](images/slendr_tskit.png){width="120%"}
 
-This interface links to Python methods implemented in [_tskit_](https://tskit.dev/tskit/docs/stable/python-api.html).
+This [R interface](https://www.slendr.net/reference/index.html#tree-sequence-loading-and-processing) links to Python methods implemented in [_tskit_](https://tskit.dev/tskit/docs/stable/python-api.html).
 
 </center>
 
@@ -840,7 +852,20 @@ Tree sequences make it possible to directly compute many quantities of interest 
 
 <center>![](images/tree_sequence_diagram.png)</center>
 
-# Sample information
+# How do we use this in practice?
+
+## Extracting sample information
+
+Each "sampled" individual in _slendr_ has a symbolic name, a sampling time, and a population assignment:
+
+```{r}
+#| fig-align: center
+#| echo: false
+#| fig-width: 8
+plot_model(model)
+```
+
+## Extracting sample information
 
 Each "sampled" individual in _slendr_ has a symbolic name, a sampling time, and a population assignment:
 
@@ -882,7 +907,11 @@ ts <-
   ts_mutate(mutation_rate = 1e-8)
 ```
 
-## Library of `ts_<...>()` functions
+<br>
+
+<center>**_slendr_ provides a large [library of functions](https://www.slendr.net/reference/index.html#tree-sequence-loading-and-processing) for computing population genetic statistics on tree sequences**</center>
+
+## Example: allele frequency spectrum
 
 ```{r}
 #| echo: false
@@ -919,31 +948,26 @@ afs
 ::: fragment
 ```{r}
 #| fig-height: 10
-plot(afs, type = "b")
+plot(afs, type = "b",
+     xlab = "allele count bin",
+     ylab = "frequency")
 ```
 :::
 :::
 
 ::::
 
-<!-- ```{r} -->
-<!-- for (N_test in seq(1000, 20000, by = 1000)) { -->
-<!--   pop <- population("pop", N = N_test, time = 100000) -->
-<!--   model <- compile_model(pop, generation_time = 1, direction = "backward") -->
+## What we have learned so far
 
-<!--   ts <- -->
-<!--     msprime(model, sequence_length = 100e6, recombination_rate = 1e-8) %>% -->
-<!--     ts_mutate(mutation_rate = 1e-8) -->
+1. creating populations -- [`populations()`](https://www.slendr.net/reference/population.html)
+2. compiling models -- [`compile_model()`](https://www.slendr.net/reference/compile_model.html)
+3. simulating tree sequences -- [`msprime()`](https://www.slendr.net/reference/msprime.html)
+4. extracting samples -- [`ts_samples()`](https://www.slendr.net/reference/ts_samples.html)
+5. computing AFS -- [`ts_afs()`](https://www.slendr.net/reference/ts_afs.html)
 
-<!--   samples <- ts_samples(ts) %>% sample_n(10) %>% pull(name) -->
+<br>
 
-<!--   new_afs <- ts_afs(ts, list(samples), polarised = TRUE) -->
-<!--   lines(new_afs, type = "b", col = "black", add = TRUE) -->
-<!-- } -->
-<!-- ``` -->
-
-
-
+<center><h1>**Let's put this to use!**</h1></center>
 
 
 
@@ -979,7 +1003,7 @@ dput(as.vector(observed_afs))
 
 Fossil evidence is consistent with constant size of the population over 100,000 generations of its history. An Oracle you met in the Temple of Time said that the true squirrel $N_e$ has been between 1000 and 30000.
 
-Use _slendr_ to simulate history of this species and guess the likely value of squirrel's $N_e$ given the observed AFS?
+Use _slendr_ to simulate history of this species. Use this to guess the likely value of squirrel's $N_e$ given the observed AFS.
 
 
 
@@ -989,18 +1013,19 @@ Use _slendr_ to simulate history of this species and guess the likely value of s
 
 2. Find the $N_e$ value that will give the closest AFS to the one you got from Hestu. Use whatever method you're comfortable with based on your programming experience:
 
-    a) Plot different simulated AFS vectors along with the observed AFS and just eye-ball it.
+    - i ) Plot simulated AFS for different $N_e$ with the AFS and just eye-ball $N_e$ value that looks correct.
   
-    b) Simulate AFS across a grid of $N_e$ values and find the closest matching one (maybe use [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error)?)
+    - ii ) Simulate AFS across a grid of $N_e$ values and find the closest matching one (maybe use [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error)?)
   
-    c) Run a mini-Approximate Bayesian Computation, using the Oracle's range of [10000, 30000] as a uniform prior.
+    - iii ) Run a mini-Approximate Bayesian Computation, using the Oracle's range of [10000, 30000] as a uniform prior.
 
 
-## Exercise #2 -- simulations on a grid (solution b)
+## Exercise #1 -- simulations on a grid
 
 ```{r}
+#| output: false
 #| code-fold: true
-#| code-summary: "Show a solution"
+#| code-summary: "Show solution 'ii'"
 simulate_afs <- function(Ne) {
   model_path <- tempfile()
   on.exit(unlink(model_path, recursive = TRUE, force = TRUE))
@@ -1040,8 +1065,8 @@ errors <- sapply(afs_grid, function(afs) {
 
 # plot the errors, highlight the most likely value
 plot(Ne_grid, errors)
-abline(v = Ne_grid[which.min(errors)], color = "green")
-abline(v = TRUE_NE, color = "purple")
+abline(v = Ne_grid[which.min(errors)], col = "green")
+abline(v = TRUE_NE, col = "purple")
 legend("topright", legend = c(paste("inferred Ne =", Ne_grid[which.min(errors)]),
                               paste("true Ne =", TRUE_NE)),
        col = c("green", "purple"), lty = 2)
@@ -1059,9 +1084,11 @@ legend("topright", legend = paste("Ne =", Ne_grid[which.min(errors)]),
 
 
 
-## Exercise #2 -- ABC inference (solution c)
+## Exercise #1 -- ABC inference
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show solution 'iii'"
 # Compute a single AFS given input Ne sampled from the prior, return the
 # error vs observed AFS together with the Ne
 compute_Ne_error <- function(Ne) {
@@ -1114,13 +1141,141 @@ TRUE_NE
 ```
 
 
-## Exercise #2 -- conclusion
 
-Of course, this scenario was extremely basic!
+## Exercise #2
 
-But we could easily include other demographic events, more complex history, gene flow...
+:::: columns
 
-Speaking of more complex models and analyses...
+::: {.column width="60%"}
+Tectonic shifts caused by activated Sheikah towers caused speciation of the squirrels. Unfortunately, their future is clouded by the shadow cast over Hyrule by Calamity Ganon.
+
+Can you help the Oracle predict the future shape of the AFS of the squirrels, assuming starting $N_e$ = 6543? Species #1 will remain constant, species #2 will expand 3X, species #3 will get 3X smaller.
+
+:::
+
+::: {.column width="40%"}
+```{r}
+#| echo: false
+#| fig-height: 13
+Ne_start <- 6543
+Ne_factor <- 3
+
+pop1 <- population("s1", N = Ne_start, time = 1)
+
+pop2 <-
+  population("s2", N = Ne_start, time = 2, parent = pop1) %>%
+  resize(how = "step", N = as.integer(Ne_factor * Ne_start), time = 5000)
+
+pop3 <-
+  population("s3", N = Ne_start, time = 2, parent = pop1) %>%
+  resize(how = "step", N = as.integer(Ne_start / Ne_factor), time = 5000)
+
+model <- compile_model(
+  populations = list(pop1, pop2, pop3),
+  generation_time = 1,
+  simulation_length = 10000
+)
+
+plot_model(model)
+```
+
+:::
+
+::::
+
+## Exercise #2 -- solution
+
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show solution"
+#| fig-align: center
+#| fig-width: 10
+Ne_start <- 6543
+Ne_factor <- 3
+
+pop1 <- population("s1", N = Ne_start, time = 1)
+
+pop2 <-
+  population("s2", N = Ne_start, time = 2, parent = pop1) %>%
+  resize(how = "step", N = as.integer(Ne_factor * Ne_start), time = 5000)
+
+pop3 <-
+  population("s3", N = Ne_start, time = 2, parent = pop1) %>%
+  resize(how = "step", N = as.integer(Ne_start / Ne_factor), time = 5000)
+
+model <- compile_model(
+  populations = list(pop1, pop2, pop3),
+  generation_time = 1,
+  simulation_length = 10000
+)
+
+ts <-
+  msprime(model, sequence_length = 10e6, recombination_rate = 1e-8) %>%
+  ts_mutate(mutation_rate = 1e-8)
+
+samples <- ts_samples(ts) %>%
+  group_by(pop) %>%
+  sample_n(20)
+
+pop1_names <- filter(samples, pop == "s1")$name
+pop2_names <- filter(samples, pop == "s2")$name
+pop3_names <- filter(samples, pop == "s3")$name
+
+afs1 <- ts_afs(ts, list(pop1_names), polarised = TRUE)
+afs2 <- ts_afs(ts, list(pop2_names), polarised = TRUE)
+afs3 <- ts_afs(ts, list(pop3_names), polarised = TRUE)
+
+plot(afs2, type = "l", col = "blue", cex = 0.2, xlab = "allele count bin", ylab = "frequency")
+lines(afs1, type = "l", cex = 0.2)
+lines(afs3, type = "l", col = "green", cex = 0.2)
+legend("topright", legend = c("constant", "expansion", "contraction"),
+       fill = c("black", "blue", "green"))
+```
+
+<!-- ```{r} -->
+<!-- #| code-fold: true -->
+<!-- #| code-summary: "Show solution" -->
+<!-- simulate_future_afs <- function(Ne_start, resize_factor) { -->
+<!--   Ne_end <- as.integer(Ne_start * resize_factor) -->
+
+<!--   if (Ne_start == Ne_end) -->
+<!--     model <- "constant" -->
+<!--   else if (Ne_start > Ne_end) -->
+<!--     model <- "contraction" -->
+<!--   else -->
+<!--     model <- "expansion" -->
+
+<!--   pop <- population("squirrels", N = Ne_start, time = 1) -->
+
+<!--   if (model != "constant") -->
+<!--     pop <- resize(pop, N = Ne_end, time = 5000, how = "step") -->
+
+<!--   ts <- -->
+<!--     compile_model(pop, generation_time = 1, simulation_length = 10000) %>% -->
+<!--     msprime(sequence_length = 50e6, recombination_rate = 1e-8) %>% -->
+<!--     ts_mutate(mutation_rate = 1e-8) -->
+
+<!--   samples <- ts_samples(ts) %>% sample_n(50) %>% pull(name) -->
+<!--   afs <- ts_afs(ts, list(samples), polarised = TRUE) -->
+
+<!--   tibble( -->
+<!--     model = model, -->
+<!--     freq = afs, -->
+<!--     bin = seq_along(afs) -->
+<!--   ) -->
+<!-- } -->
+
+<!-- afs1 <- simulate_future_afs(Ne_start = 6543, resize_factor = 1) -->
+<!-- afs2 <- simulate_future_afs(Ne_start = 6543, resize_factor = 1/3) -->
+<!-- afs3 <- simulate_future_afs(Ne_start = 6543, resize_factor = 3) -->
+
+<!-- afs <- rbind(afs1, afs2, afs3) -->
+
+<!-- ggplot(afs, aes(bin, freq, color = model)) + -->
+<!--   geom_line(stat = "identity") + -->
+<!--   facet_wrap(~ model) -->
+<!-- ``` -->
 
 
 
