@@ -1,3 +1,5 @@
+library(slendr)
+
 chimp <- population("CH", time = 7e6, N = 7000)
 
 afr <- population("AFR", parent = chimp, time = 6e6, N = 10000)
@@ -13,5 +15,4 @@ model <- compile_model(
   generation_time = 30
 )
 
-ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8) %>%
-  ts_mutate(mutation_rate = 1e-8)
+ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)

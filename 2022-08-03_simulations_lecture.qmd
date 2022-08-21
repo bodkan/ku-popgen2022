@@ -310,139 +310,139 @@ set.seed(42)
 
 <!-- :::: -->
 
-<!-- # {background-image="images/montypython.jpeg"} -->
+# {background-image="images/montypython.jpeg"}
 
-<!-- <h1 color="white" style="background-color: lightgray;vertical-align: bottom;">But now for something completely different...</h1> -->
+<h1 color="white" style="background-color: lightgray;vertical-align: bottom;">But now for something completely different...</h1>
 
-<!-- # Let's do "real" simulations -->
+# Let's do "real" simulations
 
-<!-- ## There are many pieces of simulation software -->
+## There are many pieces of simulation software
 
-<!-- The most famous and widely used are ([SLiM](https://messerlab.org/slim/)) and ([msprime](https://tskit.dev/msprime/docs/stable/intro.html)). -->
+The most famous and widely used are ([SLiM](https://messerlab.org/slim/)) and ([msprime](https://tskit.dev/msprime/docs/stable/intro.html)).
 
-<!-- ::: fragment -->
-<!-- They are both extremely powerful... -->
-<!-- ::: -->
+::: fragment
+They are both extremely powerful...
+:::
 
-<!-- ::: fragment -->
-<!-- ... but they require a lot of programming knowledge and quite a lot of code to write non-trivial simulations (without bugs). -->
-<!-- ::: -->
+::: fragment
+... but they require a lot of programming knowledge and quite a lot of code to write non-trivial simulations (without bugs).
+:::
 
-<!-- ::: fragment -->
-<!-- **We will learn simulation concepts using [*slendr*](http://www.slendr.net), a convenient R interface to both SLiM and msprime.** -->
-<!-- ::: -->
+::: fragment
+**We will learn simulation concepts using [*slendr*](http://www.slendr.net), a convenient R interface to both SLiM and msprime.**
+:::
 
-<!-- # SLiM -->
+# SLiM
 
-<!-- ##  -->
+##
 
-<!-- :::: {.columns} -->
+:::: {.columns}
 
-<!-- ::: {.column width="60%"} -->
+::: {.column width="60%"}
 
-<!-- <h2>What is SLiM?</h2> -->
+<h2>What is SLiM?</h2>
 
-<!-- ::: {.fragment} -->
-<!-- - **Forward-time simulator** -->
-<!-- ::: -->
+::: {.fragment}
+- **Forward-time simulator**
+:::
 
-<!-- ::: {.fragment} -->
-<!-- - It's fully programmable! -->
-<!-- ::: -->
+::: {.fragment}
+- It's fully programmable!
+:::
 
-<!-- ::: {.fragment} -->
-<!-- - Massive library of functions for: -->
-<!--   - Demographic events -->
-<!--   - Various mating systems -->
-<!--   - Selection, quantitative traits, ... -->
-<!-- ::: -->
+::: {.fragment}
+- Massive library of functions for:
+  - Demographic events
+  - Various mating systems
+  - Selection, quantitative traits, ...
+:::
 
-<!-- ::: {.fragment} -->
-<!-- - \> 700 pages long [manual](https://github.com/MesserLab/SLiM/releases/download/v3.7.1/SLiM_Manual.pdf)! -->
-<!-- ::: -->
+::: {.fragment}
+- \> 700 pages long [manual](https://github.com/MesserLab/SLiM/releases/download/v3.7.1/SLiM_Manual.pdf)!
+:::
 
-<!-- ::: -->
+:::
 
-<!-- ::: {.column width="40%"} -->
+::: {.column width="40%"}
 
-<!-- <center>![Modified from Alex Drummond](images/sim_sketches.001.png){width="100%"}</center> -->
+<center>![Modified from Alex Drummond](images/sim_sketches.001.png){width="100%"}</center>
 
-<!-- ::: -->
+:::
 
-<!-- :::: -->
+::::
 
-<!-- ## SLiMgui -- [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) for SLiM -->
+## SLiMgui -- [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) for SLiM
 
-<!-- <center>![](images/slimgui.png)</center> -->
+<center>![](images/slimgui.png)</center>
 
-<!-- ## Simple neutral simulation in SLiM -->
+## Simple neutral simulation in SLiM
 
-<!-- ```{bash} -->
-<!-- #| echo: false -->
-<!-- cat script.slim -->
-<!-- ``` -->
+```{bash}
+#| echo: false
+cat script.slim
+```
 
-<!-- # msprime -->
+# msprime
 
-<!-- ## -->
+##
 
-<!-- :::: {.columns} -->
+:::: {.columns}
 
-<!-- ::: {.column width="60%"} -->
+::: {.column width="60%"}
 
-<!-- <h2>What is [msprime](https://tskit.dev/msprime/docs/stable/intro.html)?</h2> -->
+<h2>What is [msprime](https://tskit.dev/msprime/docs/stable/intro.html)?</h2>
 
-<!-- ::: -->
+:::
 
 
-<!-- ::: {.column width="40%"} -->
+::: {.column width="40%"}
 
-<!-- <center>![Modified from Alex Drummond](images/sim_sketches.001.png){width="100%"}</center> -->
+<center>![Modified from Alex Drummond](images/sim_sketches.001.png){width="100%"}</center>
 
-<!-- ::: -->
+:::
 
-<!-- :::: -->
+::::
 
-<!-- ## -->
+##
 
-<!-- :::: {.columns} -->
+:::: {.columns}
 
-<!-- ::: {.column width="60%"} -->
+::: {.column width="60%"}
 
-<!-- <h2>What is [msprime](https://tskit.dev/msprime/docs/stable/intro.html)?</h2> -->
+<h2>What is [msprime](https://tskit.dev/msprime/docs/stable/intro.html)?</h2>
 
-<!-- ::: {.fragment} -->
-<!-- - A Python module for writing **coalescent simulations** -->
-<!-- ::: -->
+::: {.fragment}
+- A Python module for writing **coalescent simulations**
+:::
 
-<!-- ::: {.fragment} -->
-<!-- - Extremely fast (genome-scale, population-scale data) -->
-<!-- ::: -->
+::: {.fragment}
+- Extremely fast (genome-scale, population-scale data)
+:::
 
-<!-- ::: {.fragment} -->
-<!-- - You must know Python fairly well to build complex models -->
-<!-- ::: -->
+::: {.fragment}
+- You must know Python fairly well to build complex models
+:::
 
-<!-- ::: -->
+:::
 
-<!-- ::: {.column width="40%"} -->
+::: {.column width="40%"}
 
-<!-- <center>![Modified from Alex Drummond](images/sim_sketches.002.png){width="100%"}</center> -->
+<center>![Modified from Alex Drummond](images/sim_sketches.002.png){width="100%"}</center>
 
-<!-- ::: -->
+:::
 
-<!-- :::: -->
+::::
 
-<!-- ## Simple simulation using _msprime_ -->
+## Simple simulation using _msprime_
 
-<!-- &nbsp; -->
+&nbsp;
 
-<!-- ```{bash} -->
-<!-- #| echo: false -->
-<!-- cat script.py -->
-<!-- ``` -->
+```{bash}
+#| echo: false
+cat script.py
+```
 
-<!-- source: [link](https://tskit.dev/msprime/docs/stable/demography.html#demographic-models) -->
+source: [link](https://tskit.dev/msprime/docs/stable/demography.html#demographic-models)
 
 
 
@@ -673,9 +673,9 @@ pop4 <-
 
 pop5 <-
   population("pop5", N = 100, time = 600, parent = pop4) %>%
-  resize(N = 50, how = "step", time = 900) %>% 
-  resize(N = 250, how = "step", time = 1200) %>% 
-  resize(N = 1000, how = "exponential", time = 1600, end = 2200) %>% 
+  resize(N = 50, how = "step", time = 900) %>%
+  resize(N = 250, how = "step", time = 1200) %>%
+  resize(N = 1000, how = "exponential", time = 1600, end = 2200) %>%
   resize(N = 400, how = "step", time = 2400)
 ```
 
@@ -728,7 +728,7 @@ We have the compiled `model`, how do we simulate data?
 -   SLiM engine
 -   msprime engine
 
-. . . 
+. . .
 
 <center>**You don't have to write any msprime/SLiM code!**</center>
 
@@ -1082,9 +1082,9 @@ Use _slendr_ to simulate history of this species. Use this to guess the likely v
 2. Find the $N_e$ value that will give the closest AFS to the one you got from Hestu. Use whatever method you're comfortable with based on your programming experience:
 
     - i ) Plot simulated AFS for different $N_e$ with the AFS and just eye-ball $N_e$ value that looks correct.
-  
+
     - ii ) Simulate AFS across a grid of $N_e$ values and find the closest matching one (maybe use [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error)?)
-  
+
     - iii ) Run a mini-Approximate Bayesian Computation, using the Oracle's range of [10000, 30000] as a uniform prior.
 
 
@@ -1522,106 +1522,131 @@ ggplot(x_inds) +
 
 
 
-
-
-
 # Exercise #5
 
-## Compute Neanderthal ancestry trajectory using $f_4$-ratio statistic
+## Neanderthal ancestry trajectory
 
 1. Take your model of Neanderthal introgression
 
-2. Implement temporal sampling of individuals:
-"EUR" individuals (perhaps one genome every 1000 years between 40 kya and present-day)
+2. Implement temporal sampling:
+
+- one "European" every 1000 years between 40 kya and present-day
+- one "Altai" (70 ky old) and one "Vindija" individual (40 ky old)
 
 3. Compute $f_4$-ratio statistic using:
 
 ```{r}
 #| eval: false
-ts_f4ratio(
-  ts,
-  X = '<vector of "European" individuals>',
-  A = '<"Altai" individual>',
-  C = '<"African" individual>',
-  O = '<"Chimp" individual>'
-)
+ts_f4ratio(ts, X = '<vector of "European" individuals>',
+           A = '<"Altai">', C = '<"African">', O = '<"Chimp">')
 ```
 
-4. Plot the estimated trajectory of Neanderthal ancestry in Europe over the last 40 thousand years.
+4. Plot the estimated trajectory of Neanderthal ancestry in Europe over time.
 
 
 # Exercise #5 -- solution
 
+<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_5.R)</h3></center>
+
+
+```{r}
+#| echo: false
+source("solutions/exercise_5.R")
+```
+
+```{r}
+source("solutions/exercise_3.R")
+```
 
 
 
 
-# Bonus exercise
-
-## Try to implement something relevant for your work
-
--   Program a demographic model for your species of interest
--   Choose a statistic whose value "true value" you know from the literature (divergence? diversity? f4-statistic? ancestry proportion? divergence?)
-- Try to replicate the statistic in the simulation
+# Tree-sequence simplification
 
 
+## Sometimes a tree sequence is too big
+
+```{r}
+#| echo: false
+ts__ <- ts_simplify(ts, simplify_to = ts_samples(ts) %>% sample_n(100) %>% pull(name))
+ts_draw(ts_tree(ts__, 1), labels = TRUE)
+```
+
+<center>**Simplification reduces the genealogies only to those nodes that form ancestors of a desired set of samples.**</center>
+
+## Meet `ts_simplify()`
+
+<br>
+```{r}
+ts_small <- ts_simplify(
+  ts,
+  simplify_to = c("CH_1", "AFR_1", "AFR_2", "AFR_3",
+                  "ALT_1", "VI_1", "EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5")
+)
+```
+
+```{r}
+pdf("trees.pdf")
+for (i in sort(sample(seq_len(ts_small$num_trees), 200))) {
+  plot(ts_phylo(ts_small, i - 1), main = i - 1) 
+}
+dev.off()
+```
 
 
-<!-- ## _Simplifying_ a tree sequence -->
-
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- model <- read_model(f4_model_path) -->
-<!-- ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8) -->
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- ts_small <- ts_simplify(ts, simplify_to = c("o_1", "a_1", "b_1", "c_1", "x1_1", "x2_1")) -->
-
-<!-- ts_small -->
-<!-- ``` -->
-
-<!-- ## Extracting a tree -->
-
-<!-- ```{r} -->
-<!-- tree <- ts_phylo(ts_small, 42) -->
-
-<!-- tree -->
-<!-- ``` -->
-
-<!-- ## Plotting a tree -->
-
-<!-- ```{r} -->
-<!-- library(ape) -->
-
-<!-- plot(tree) -->
-<!-- nodelabels() -->
-<!-- ``` -->
+<center>**Only the coalescent nodes of genealogies involving these samples will be retained.**</center>
 
 
+## Extracting a tree #1
 
-<!-- ## Exercise #5 -- solution -->
+```{r}
+tree <- ts_phylo(ts_small, 0)
+```
 
-<!-- ```{r} -->
-<!-- ts_small <- ts_simplify( -->
-<!--   ts, -->
-<!--   simplify_to = c("CH_1", "AFR_1", "ALT_1", "VI_1", -->
-<!--                   paste0("EUR_", 1:5)) -->
-<!-- ) -->
+```{r}
+#| code-fold: true
+nodes <- ts_nodes(tree)
+df <- as_tibble(nodes) %>% select(node = phylo_id, pop)
 
-<!-- ts_small -->
-<!-- ``` -->
+p_tree <- ggtree(tree) %<+% df +
+  geom_tiplab(aes(color = pop, fill = pop)) +
+  guides(color = "none") +
+  scale_x_continuous(limits = c(-7e6, 900e3))
+revts(p_tree)
+```
+
+<center>**Maybe this is introgression?</center>
 
 
-<!-- ```{r} -->
-<!-- tree <- ts_phylo(ts_small, 1000) -->
+## Extracting a tree #1908
 
-<!-- nodes <- ts_nodes(tree) -->
-<!-- df <- as_tibble(nodes) %>% select(node = phylo_id, pop) -->
+```{r}
+tree <- ts_phylo(ts_small, 1909)
+```
 
-<!-- p_tree <- ggtree(tree) %<+% df + -->
-<!--   geom_tiplab(aes(color = pop, fill = pop)) + -->
-<!--   guides(color = "none") + -->
-<!--   scale_x_continuous(limits = c(-7e6, 900e3)); revts(p_tree) -->
-<!-- ``` -->
+```{r}
+#| code-fold: true
+nodes <- ts_nodes(tree)
+df <- as_tibble(nodes) %>% select(node = phylo_id, pop)
+
+p_tree <- ggtree(tree) %<+% df +
+  geom_tiplab(aes(color = pop, fill = pop)) +
+  guides(color = "none") +
+  scale_x_continuous(limits = c(-7e6, 900e3))
+revts(p_tree)
+```
+
+::: fragment
+<center>**Maybe this is introgression?</center>
+:::
+
+<!-- # Bonus exercise -->
+
+<!-- ## Try to implement something relevant for your work -->
+
+<!-- -   Program a demographic model for your species of interest -->
+<!-- -   Choose a statistic whose value "true value" you know from the literature (divergence? diversity? f4-statistic? ancestry proportion? divergence?) -->
+<!-- - Try to replicate the statistic in the simulation -->
+
+
 
