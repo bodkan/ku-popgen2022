@@ -8,233 +8,230 @@ format:
     slide-number: true
 ---
 
-```{r, setup}
-library(dplyr)
-library(ggplot2)
-library(magrittr)
-library(forcats)
+#
 
+::: columns
+::: {.column width="70%"}
+> Many problems in population genetics cannot be solved by a mathematician, no matter how gifted. \[It\] is already clear that computer methods are very powerful. This is good. It \[...\] **permits people with limited mathematical knowledge to work on important problems** \[...\]
+:::
+
+::: {.column width="30%"}
+![](images/crow.jpeg)
+
+[James F. Crow](https://en.wikipedia.org/wiki/James_F._Crow)
+:::
+:::
+
+## Why simulations?
+
+-   Intuition for behavior of popgen statistics in various scenarios
+-   Fitting model parameters against empirical data (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
+-   Grand truth for testing and development of statistical methods
+
+## **TODO** What does it mean to simulate a genome?
+
+A chromosome is:
+
+-   a linear sequence of nucleotides
+-   which accumulates mutations in each generation
+
+## **TODO** How do we "get" a genome in real life?
+
+-   A chromosome is a linear sequence of nucleotides.
+-   Inherited from generation to generation (maybe with recombination)
+
+# Home-brewed single-locus simulations in R
+
+```{r, setup}
+library(tidyverse)
 library(parallel)
 library(MASS)
-
-library(slendr)
 
 set.seed(42)
 ```
 
-<!-- #  -->
 
-<!-- ::: columns -->
-<!-- ::: {.column width="70%"} -->
-<!-- > Many problems in population genetics cannot be solved by a mathematician, no matter how gifted. \[It\] is already clear that computer methods are very powerful. This is good. It \[...\] **permits people with limited mathematical knowledge to work on important problems** \[...\] -->
-<!-- ::: -->
+## Single-locus simulation
 
-<!-- ::: {.column width="30%"} -->
-<!-- ![](images/crow.jpeg) -->
+```{r}
+#| results: hide
+#| code-line-numbers: "|1-3|5-7|9-10|11|13-14|16-18|20"
+N <- 500 # number of (haploid) individuals in the population
+generations <- 500 # number of generations to run the simulation for
+p_start <- 0.5 # initial allele frequency
 
-<!-- [James F. Crow](https://en.wikipedia.org/wiki/James_F._Crow) -->
-<!-- ::: -->
-<!-- ::: -->
+# initialize an (empty) trajectory vector of allele frequencies
+p_traj<- rep(NA, generations)
+p_traj[1] <- p_start
 
-<!-- ## Why simulations? -->
+# in each generation...
+for (gen_i in 2:generations) {
+  p <- p_traj[gen_i - 1] # get the current frequency
 
-<!-- -   Intuition for behavior of popgen statistics in various scenarios -->
-<!-- -   Fitting model parameters against empirical data (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation)) -->
-<!-- -   Grand truth for testing and development of statistical methods -->
+  # ... calculate the allele frequency in the next generation ...
+  p_next <- rbinom(1, N, p) / N
 
-<!-- ## What does it mean to simulate a genome? -->
+  # ... and save it to the trajectory vector
+  p_traj[gen_i] <- p_next
+}
 
-<!-- A chromosome is: -->
+p_traj
+```
 
-<!-- -   a linear sequence of nucleotides -->
-<!-- -   which accumulates mutations in each generation -->
+## Single-locus simulation ($N$ = 500, $p_0 = 0.5$)
 
-<!-- ## How do we "get" a genome in real life? -->
+```{r}
+#| code-fold: true
+plot(p_traj, type = "l", ylim = c(0, 1),
+     xlab = "generations", ylab = "allele frequency")
+abline(h = p_start, lty = 2, col = "red")
+```
 
-<!-- -   A chromosome is a linear sequence of nucleotides. -->
-<!-- -   Inherited from generation to generation (maybe with recombination) -->
+## Let's make it a function
 
-<!-- # Home-brewed single-locus simulations in R -->
+**Input:** $N$, $p_0$ and the number of generations
 
-<!-- ## Single-locus simulation -->
+**Output:** allele frequency trajectory vector
 
-<!-- ```{r} -->
-<!-- #| results: hide -->
-<!-- #| code-line-numbers: "|1-3|5-7|9-10|11|13-14|16-18|20" -->
-<!-- N <- 500 # number of (haploid) individuals in the population -->
-<!-- generations <- 500 # number of generations to run the simulation for -->
-<!-- p_start <- 0.5 # initial allele frequency -->
+```{r}
+simulate <- function(N, p_start, generations) {
+  # initialize an (empty) trajectory vector of allele frequencies
+  p_traj<- rep(NA, generations)
+  p_traj[1] <- p_start
 
-<!-- # initialize an (empty) trajectory vector of allele frequencies -->
-<!-- p_traj<- rep(NA, generations) -->
-<!-- p_traj[1] <- p_start -->
+  # in each generation...
+  for (gen_i in 2:generations) {
+    p <- p_traj[gen_i - 1] # get the current frequency
+    # ... calculate the allele frequency in the next generation ...
+    p_next <- rbinom(1, N, p) / N
+    # ... and save it to the trajectory vector
+    p_traj[gen_i] <- p_next
+  }
 
-<!-- # in each generation... -->
-<!-- for (gen_i in 2:generations) { -->
-<!--   p <- p_traj[gen_i - 1] # get the current frequency -->
+  p_traj
+}
+```
 
-<!--   # ... calculate the allele frequency in the next generation ... -->
-<!--   p_next <- rbinom(1, N, p) / N -->
+## $N$ = 500, $p_0 = 0.5$ (20 replicates)
 
-<!--   # ... and save it to the trajectory vector -->
-<!--   p_traj[gen_i] <- p_next -->
-<!-- } -->
+```{r}
+#| code-fold: true
+#| fig-align: center
+reps <- replicate(20, simulate(N = 500, p_start = 0.5, generations = 2000))
 
-<!-- p_traj -->
-<!-- ``` -->
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
 
-<!-- ## Single-locus simulation ($N$ = 500, $p_0 = 0.5$) -->
+## $N$ = 1000, $p_0 = 0.5$ (20 replicates)
 
-<!-- ```{r} -->
-<!-- #| code-fold: true -->
-<!-- plot(p_traj, type = "l", ylim = c(0, 1), -->
-<!--      xlab = "generations", ylab = "allele frequency") -->
-<!-- abline(h = p_start, lty = 2, col = "red") -->
-<!-- ``` -->
+```{r}
+#| code-fold: true
+#| fig-align: center
+reps <- replicate(20, simulate(N = 1000, p_start = 0.5, generations = 2000))
 
-<!-- ## Let's make it a function -->
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
 
-<!-- **Input:** $N$, $p_0$ and the number of generations -->
+## $N$ = 5000, $p_0 = 0.5$ (20 replicates)
 
-<!-- **Output:** allele frequency trajectory vector -->
+```{r}
+#| code-fold: true
+#| fig-align: center
+reps <- replicate(20, simulate(N = 5000, p_start = 0.5, generations = 2000))
 
-<!-- ```{r} -->
-<!-- simulate <- function(N, p_start, generations) { -->
-<!--   # initialize an (empty) trajectory vector of allele frequencies -->
-<!--   p_traj<- rep(NA, generations) -->
-<!--   p_traj[1] <- p_start -->
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
 
-<!--   # in each generation... -->
-<!--   for (gen_i in 2:generations) { -->
-<!--     p <- p_traj[gen_i - 1] # get the current frequency -->
-<!--     # ... calculate the allele frequency in the next generation ... -->
-<!--     p_next <- rbinom(1, N, p) / N -->
-<!--     # ... and save it to the trajectory vector -->
-<!--     p_traj[gen_i] <- p_next -->
-<!--   } -->
+## $N$ = 10000, $p_0 = 0.5$ (20 replicates)
 
-<!--   p_traj -->
-<!-- } -->
-<!-- ``` -->
+```{r}
+#| code-fold: true
+#| fig-align: center
+reps <- replicate(50, simulate(N = 10000, p_start = 0.5, generations = 20000))
 
-<!-- ## $N$ = 500, $p_0 = 0.5$ (20 replicates) -->
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+```
 
-<!-- ```{r} -->
-<!-- #| code-fold: true -->
-<!-- #| fig-align: center -->
-<!-- reps <- replicate(20, simulate(N = 500, p_start = 0.5, generations = 2000)) -->
+## $N$ = 10000, $p_0 = 0.5$ (20 replicates)
 
-<!-- matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1) -->
-<!-- ``` -->
+```{r}
+#| eval: false
+#| code-fold: true
+#| fig-align: center
+factors <- fractions(c(2, 1/2, 1/5, 1/10))
+matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
+abline(v = 10000 * factors, lwd = 5)
+```
 
-<!-- ## $N$ = 1000, $p_0 = 0.5$ (20 replicates) -->
+## Expected allele frequency distribution
 
-<!-- ```{r} -->
-<!-- #| code-fold: true -->
-<!-- #| fig-align: center -->
-<!-- reps <- replicate(20, simulate(N = 1000, p_start = 0.5, generations = 2000)) -->
+```{r, eval = !file.exists("/tmp/final_frequencies.rds")}
+#| eval: false
+#| echo: false
+p_start <- 0.5
+N <- 10000
+factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
 
-<!-- matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1) -->
-<!-- ``` -->
+final_frequencies <- parallel::mclapply(
+  seq_along(factors), function(i) {
+    f <- factors[i]
+    t <- as.integer(N * f)
+    # get complete trajectories as a matrix (each column a single trajectory)
+    reps <- replicate(10000, simulate(N = N, p_start = p_start, generations = t))
+    # only keep the last slice of the matrix with the final frequencies
+    data.frame(
+      t = sprintf("t = %s * N", f),
+      freq = reps[t, ]
+    )
+  },
+  mc.cores = parallel::detectCores()
+) %>% do.call(rbind, .)
+final_frequencies$t <- fct_rev(fct_relevel(final_frequencies$t, sprintf("t = %s * N", factors)))
 
-<!-- ## $N$ = 5000, $p_0 = 0.5$ (20 replicates) -->
+saveRDS(final_frequencies, "/tmp/final_frequencies.rds")
+```
 
-<!-- ```{r} -->
-<!-- #| code-fold: true -->
-<!-- #| fig-align: center -->
-<!-- reps <- replicate(20, simulate(N = 5000, p_start = 0.5, generations = 2000)) -->
+::: columns
+::: {.column width="50%"}
+```{r}
+#| eval: false
+#| echo: false
+#| fig-align: center
+#| fig-height: 10
+#| fig-width: 10
+final_frequencies <- readRDS("/tmp/final_frequencies.rds")
+final_frequencies$t <- final_frequencies$t
 
-<!-- matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1) -->
-<!-- ``` -->
+final_frequencies %>% .[.$freq > 0 & .$freq < 1, ] %>%
+ggplot() +
+  geom_histogram(aes(freq, y = ..density.., fill = t), position = "identity", bins = 100, alpha = 0.75) +
+  labs(x = "allele frequency") +
+  coord_cartesian(ylim = c(0, 3)) +
+  facet_grid(t ~ .) +
+  guides(fill = guide_legend(sprintf("time since\nthe start\n[assuming\nN = %s]", N))) +
+  theme_minimal() +
+  theme(strip.text.y = element_blank(),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        legend.title = element_text(size = 15),
+        legend.text = element_text(size = 15))
+```
+:::
 
-<!-- ## $N$ = 10000, $p_0 = 0.5$ (20 replicates) -->
+::: {.column width="50%"}
+::: fragment
+![*"Diffusion Models in Population Genetics"*, [Kimura (1964)](https://www.jstor.org/stable/3211856#metadata_info_tab_contents)](images/kimura.jpeg)
+:::
+:::
+:::
 
-<!-- ```{r} -->
-<!-- #| code-fold: true -->
-<!-- #| fig-align: center -->
-<!-- reps <- replicate(50, simulate(N = 10000, p_start = 0.5, generations = 20000)) -->
+# Bonus exercise
 
-<!-- matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1) -->
-<!-- ``` -->
+If you're bored later at home, try adding selection to this model!
 
-<!-- ## $N$ = 10000, $p_0 = 0.5$ (20 replicates) -->
-
-<!-- ```{r} -->
-<!-- #| eval: false -->
-<!-- #| code-fold: true -->
-<!-- #| fig-align: center -->
-<!-- factors <- fractions(c(2, 1/2, 1/5, 1/10)) -->
-<!-- matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1) -->
-<!-- abline(v = 10000 * factors, lwd = 5) -->
-<!-- ``` -->
-
-<!-- ## Expected allele frequency distribution -->
-
-<!-- ```{r, eval = !file.exists("/tmp/final_frequencies.rds")} -->
-<!-- #| eval: false -->
-<!-- #| echo: false -->
-<!-- p_start <- 0.5 -->
-<!-- N <- 10000 -->
-<!-- factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10)) -->
-
-<!-- final_frequencies <- parallel::mclapply( -->
-<!--   seq_along(factors), function(i) { -->
-<!--     f <- factors[i] -->
-<!--     t <- as.integer(N * f) -->
-<!--     # get complete trajectories as a matrix (each column a single trajectory) -->
-<!--     reps <- replicate(10000, simulate(N = N, p_start = p_start, generations = t)) -->
-<!--     # only keep the last slice of the matrix with the final frequencies -->
-<!--     data.frame( -->
-<!--       t = sprintf("t = %s * N", f), -->
-<!--       freq = reps[t, ] -->
-<!--     ) -->
-<!--   }, -->
-<!--   mc.cores = parallel::detectCores() -->
-<!-- ) %>% do.call(rbind, .) -->
-<!-- final_frequencies$t <- fct_rev(fct_relevel(final_frequencies$t, sprintf("t = %s * N", factors))) -->
-
-<!-- saveRDS(final_frequencies, "/tmp/final_frequencies.rds") -->
-<!-- ``` -->
-
-<!-- ::: columns -->
-<!-- ::: {.column width="50%"} -->
-<!-- ```{r} -->
-<!-- #| eval: false -->
-<!-- #| echo: false -->
-<!-- #| fig-align: center -->
-<!-- #| fig-height: 10 -->
-<!-- #| fig-width: 10 -->
-<!-- final_frequencies <- readRDS("/tmp/final_frequencies.rds") -->
-<!-- final_frequencies$t <- final_frequencies$t -->
-
-<!-- final_frequencies %>% .[.$freq > 0 & .$freq < 1, ] %>% -->
-<!-- ggplot() + -->
-<!--   geom_histogram(aes(freq, y = ..density.., fill = t), position = "identity", bins = 100, alpha = 0.75) + -->
-<!--   labs(x = "allele frequency") + -->
-<!--   coord_cartesian(ylim = c(0, 3)) + -->
-<!--   facet_grid(t ~ .) + -->
-<!--   guides(fill = guide_legend(sprintf("time since\nthe start\n[assuming\nN = %s]", N))) + -->
-<!--   theme_minimal() + -->
-<!--   theme(strip.text.y = element_blank(), -->
-<!--         axis.title.x = element_text(size = 15), -->
-<!--         axis.title.y = element_text(size = 15), -->
-<!--         axis.text.x = element_text(size = 15), -->
-<!--         axis.text.y = element_text(size = 15), -->
-<!--         legend.title = element_text(size = 15), -->
-<!--         legend.text = element_text(size = 15)) -->
-<!-- ``` -->
-<!-- ::: -->
-
-<!-- ::: {.column width="50%"} -->
-<!-- ::: fragment -->
-<!-- ![*"Diffusion Models in Population Genetics"*, [Kimura (1964)](https://www.jstor.org/stable/3211856#metadata_info_tab_contents)](images/kimura.jpeg) -->
-<!-- ::: -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- # Bonus exercise -->
-
-<!-- If you're bored later at home... -->
+In each generation, weight the frequencies based on fitness of each of the tree genotypes.
 
 <!-- ## Let's add selection! -->
 
@@ -288,33 +285,35 @@ set.seed(42)
 
 <!-- (Let's assume additive selection: $h = \frac{1}{2}$). -->
 
-<!-- ##  -->
+##
 
-<!-- :::: columns -->
+:::: columns
 
-<!-- ::: {.column width="40%"} -->
+::: {.column width="40%"}
 
-<!-- <center> -->
+<center>
 
-<!-- ![](images/feynman.jpeg) -->
+![](images/feynman.jpeg)
 
-<!-- [Richard Feynman](https://en.wikipedia.org/wiki/Richard_Feynman) -->
+[Richard Feynman](https://en.wikipedia.org/wiki/Richard_Feynman)
 
-<!-- </center> -->
+</center>
 
-<!-- ::: -->
+:::
 
-<!-- ::: {.column width="60%"} -->
+::: {.column width="60%"}
 
-<!-- ![](images/feynman_quote.png) -->
+![](images/feynman_quote.png)
 
-<!-- ::: -->
+:::
 
-<!-- :::: -->
+::::
 
 # {background-image="images/montypython.jpeg"}
 
 <h1 color="white" style="background-color: lightgray;vertical-align: bottom;">But now for something completely different...</h1>
+
+
 
 # Let's do "real" simulations
 
@@ -1587,9 +1586,20 @@ ts_small <- ts_simplify(
 ```
 
 <!-- ```{r} -->
+<!-- library(ggtree) -->
 <!-- pdf("trees.pdf") -->
-<!-- for (i in sort(sample(seq_len(ts_small$num_trees), 200))) { -->
-<!--   plot(ts_phylo(ts_small, i - 1), main = i - 1)  -->
+<!-- for (i in seq_len(ts_small$num_trees)) { -->
+<!--   tree <- ts_phylo(ts_small, i, quiet = TRUE) -->
+<!-- nodes <- ts_nodes(tree) %>% -->
+<!--   as_tibble %>%  -->
+<!--   dplyr::select(node = phylo_id, pop) -->
+
+<!-- p_tree <- ggtree(tree) %<+% nodes + -->
+<!--   geom_tiplab(aes(color = pop, fill = pop)) + -->
+<!--   guides(color = "none") + -->
+<!--   ggtitle(i) + -->
+<!--   scale_x_continuous(limits = c(-7e6, 900e3)) -->
+<!-- print(revts(p_tree)) -->
 <!-- } -->
 <!-- dev.off() -->
 <!-- ``` -->
@@ -1600,10 +1610,10 @@ ts_small <- ts_simplify(
 <center>**Only the coalescent nodes of genealogies involving<br>these samples will be retained.**</center>
 
 
-## Extracting a tree #1
+## Extracting a tree #1734
 
 ```{r}
-tree <- ts_phylo(ts_small, 0, quiet = TRUE)
+tree <- ts_phylo(ts_small, 1734, quiet = TRUE)
 ```
 
 ```{r}
@@ -1620,15 +1630,16 @@ nodes <- ts_nodes(tree) %>%
 p_tree <- ggtree(tree) %<+% nodes +
   geom_tiplab(aes(color = pop, fill = pop)) +
   guides(color = "none") +
-  scale_x_continuous(limits = c(-7e6, 900e3))
+  scale_x_continuous(limits = c(-7e6, 900e3)) +
+  geom_vline(xintercept = -700e3, linetype = 2, color = "red")
 revts(p_tree)
 ```
 
 
-## Extracting a tree #1908
+## Extracting a tree #1
 
 ```{r}
-tree <- ts_phylo(ts_small, 1909, quiet = TRUE)
+tree <- ts_phylo(ts_small, 1, quiet = TRUE)
 ```
 
 ```{r}
@@ -1645,7 +1656,8 @@ nodes <- ts_nodes(tree) %>%
 p_tree <- ggtree(tree) %<+% nodes +
   geom_tiplab(aes(color = pop, fill = pop)) +
   guides(color = "none") +
-  scale_x_continuous(limits = c(-7e6, 900e3))
+  scale_x_continuous(limits = c(-7e6, 900e3)) +
+  geom_vline(xintercept = -700e3, linetype = 2, color = "red")
 revts(p_tree)
 ```
 

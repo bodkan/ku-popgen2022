@@ -15,4 +15,4 @@ model <- compile_model(
   generation_time = 30
 )
 
-ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8)
+ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, random_seed = 123)
