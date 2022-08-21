@@ -398,7 +398,7 @@ They are both extremely powerful...
 
 ```{bash}
 #| echo: false
-cat script.slim
+cat examples/script.slim
 ```
 
 # msprime
@@ -459,7 +459,7 @@ The following is basically the same model as the SLiM script earlier:
 
 ```{bash}
 #| echo: false
-cat script.py
+cat examples/script.py
 ```
 
 source: [link](https://tskit.dev/msprime/docs/stable/demography.html#demographic-models)
