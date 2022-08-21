@@ -172,8 +172,13 @@ abline(v = 10000 * factors, lwd = 5)
 
 ## Expected allele frequency distribution
 
+::: columns
+::: {.column width="50%"}
 ```{r}
 #| code-fold: true
+#| fig-align: center
+#| fig-height: 10
+#| fig-width: 10
 p_start <- 0.5
 N <- 10000
 factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
@@ -193,15 +198,7 @@ final_frequencies <- parallel::mclapply(
   mc.cores = parallel::detectCores()
 ) %>% do.call(rbind, .)
 final_frequencies$t <- fct_rev(fct_relevel(final_frequencies$t, sprintf("t = %s * N", factors)))
-```
 
-::: columns
-::: {.column width="50%"}
-```{r}
-#| code-fold: true
-#| fig-align: center
-#| fig-height: 10
-#| fig-width: 10
 final_frequencies %>% .[.$freq > 0 & .$freq < 1, ] %>%
 ggplot() +
   geom_histogram(aes(freq, y = ..density.., fill = t), position = "identity", bins = 100, alpha = 0.75) +
@@ -1207,8 +1204,9 @@ plot_model(model)
 
 ## Exercise #2 -- solution
 
+<br><br>
 
-<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_2.R)</h3></center>
+<center><h3>[link](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_2.R)</h3></center>
 
 
 
@@ -1269,10 +1267,10 @@ model <- compile_model(
   generation_time = 1, simulation_length = 7000
 )
 
-plot_model(model, proportions = TRUE)
-
 ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8)
+
+plot_model(model, proportions = TRUE)
 ```
 
 
@@ -1372,7 +1370,9 @@ Then simulate 100Mb sequence with `msprime()`, using recombination rate 1e-8 per
 
 ## Exercise #3 -- solution
 
-<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_3.R)</h3></center>
+<br><br>
+
+<center><h3>[link](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_3.R)</h3></center>
 
 
 # Exercise #4
