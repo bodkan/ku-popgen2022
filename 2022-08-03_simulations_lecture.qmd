@@ -9,11 +9,13 @@ format:
 ---
 
 ```{r, setup}
-library(tidyverse)
+library(dplyr)
 library(ggplot2)
+library(magrittr)
+library(forcats)
+
 library(parallel)
 library(MASS)
-library(forcats)
 
 library(slendr)
 
@@ -1585,13 +1587,13 @@ ts_small <- ts_simplify(
 )
 ```
 
-```{r}
-pdf("trees.pdf")
-for (i in sort(sample(seq_len(ts_small$num_trees), 200))) {
-  plot(ts_phylo(ts_small, i - 1), main = i - 1) 
-}
-dev.off()
-```
+<!-- ```{r} -->
+<!-- pdf("trees.pdf") -->
+<!-- for (i in sort(sample(seq_len(ts_small$num_trees), 200))) { -->
+<!--   plot(ts_phylo(ts_small, i - 1), main = i - 1)  -->
+<!-- } -->
+<!-- dev.off() -->
+<!-- ``` -->
 
 
 <center>**Only the coalescent nodes of genealogies involving these samples will be retained.**</center>
@@ -1605,8 +1607,13 @@ tree <- ts_phylo(ts_small, 0)
 
 ```{r}
 #| code-fold: true
-nodes <- ts_nodes(tree)
-df <- as_tibble(nodes) %>% select(node = phylo_id, pop)
+#| fig-align: center
+# this needs another R package
+library(ggtree)
+
+nodes <- ts_nodes(tree) %>%
+  as_tibble %>% 
+  dplyr::select(node = phylo_id, pop)
 
 p_tree <- ggtree(tree) %<+% df +
   geom_tiplab(aes(color = pop, fill = pop)) +
@@ -1626,8 +1633,13 @@ tree <- ts_phylo(ts_small, 1909)
 
 ```{r}
 #| code-fold: true
-nodes <- ts_nodes(tree)
-df <- as_tibble(nodes) %>% select(node = phylo_id, pop)
+#| fig-align: center
+# this needs another R package
+library(ggtree)
+
+nodes <- ts_nodes(tree) %>%
+  as_tibble %>%
+  dplyr::select(node = phylo_id, pop)
 
 p_tree <- ggtree(tree) %<+% df +
   geom_tiplab(aes(color = pop, fill = pop)) +
