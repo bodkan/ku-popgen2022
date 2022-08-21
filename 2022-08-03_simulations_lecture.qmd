@@ -437,6 +437,7 @@ cat script.slim
 
 ## Simple simulation using _msprime_
 
+The following is basically the same model as the SLiM script earlier:
 &nbsp;
 
 ```{bash}
@@ -1196,7 +1197,7 @@ b <- population("b", time = 3500, N = 4000, parent = a)
 x1 <- population("x1", time = 3800, N = 8000, parent = c)
 x2 <- population("x2", time = 4000, N = 10000, parent = x1)
 
-gf <- gene_flow(from = b, to = x1, start = 5100, end = 6000, rate = 0.3)
+gf <- gene_flow(from = b, to = x1, start = 5100, end = 5500, rate = 0.3)
 
 model <- compile_model(
   populations = list(a, b, x1, x2, c, o), gene_flow = gf,
@@ -1278,7 +1279,8 @@ title <- theme(plot.title = element_text(size=22))
 
 cowplot::plot_grid(
   plot_model(model) + ggtitle("Normal time scale") + title,
-  plot_model(model, log = TRUE, proportions = TRUE) + ggtitle("Time on the log-scale") + title
+  plot_model(model, log = TRUE, proportions = TRUE) +
+    ggtitle("Time on the log-scale") + title
 )
 ```
 
@@ -1512,7 +1514,7 @@ x_inds$f4 <- f4_result$f4
 #| code-fold: true
 #| fig-align: center
 ggplot(x_inds) +
-  geom_rect(aes(xmin = 5100, xmax = 6000, ymin = -Inf, ymax = Inf), alpha = 0.75, fill = "gray") +
+  geom_rect(aes(xmin = 5100, xmax = 5500, ymin = -Inf, ymax = Inf), alpha = 0.75, fill = "gray") +
   geom_jitter(aes(time, f4, color = pop)) +
   geom_line(data = . %>% group_by(pop, time) %>% summarise(f4 = mean(f4)),
             aes(time, f4, color = pop), size = 2) +
@@ -1532,8 +1534,8 @@ ggplot(x_inds) +
 
 2. Implement temporal sampling:
 
-- one "European" every 1000 years between 40 kya and present-day
-- one "Altai" (70 ky old) and one "Vindija" individual (40 ky old)
+- one "European" every 1000 yrs between 40 kya and today
+- "Altai" (70 ky old) and "Vindija" individuals (40 ky old)
 
 3. Compute $f_4$-ratio statistic using:
 
@@ -1556,10 +1558,6 @@ ts_f4ratio(ts, X = '<vector of "European" individuals>',
 source("solutions/exercise_5.R")
 ```
 
-```{r}
-source("solutions/exercise_3.R")
-```
-
 
 
 
@@ -1570,6 +1568,7 @@ source("solutions/exercise_3.R")
 
 ```{r}
 #| echo: false
+source("solutions/exercise_3.R")
 ts__ <- ts_simplify(ts, simplify_to = ts_samples(ts) %>% sample_n(100) %>% pull(name))
 ts_draw(ts_tree(ts__, 1), labels = TRUE)
 ```
@@ -1596,52 +1595,54 @@ ts_small <- ts_simplify(
 <!-- ``` -->
 
 
-<center>**Only the coalescent nodes of genealogies involving these samples will be retained.**</center>
+<br>
+
+<center>**Only the coalescent nodes of genealogies involving<br>these samples will be retained.**</center>
 
 
 ## Extracting a tree #1
 
 ```{r}
-tree <- ts_phylo(ts_small, 0)
+tree <- ts_phylo(ts_small, 0, quiet = TRUE)
 ```
 
 ```{r}
 #| code-fold: true
 #| fig-align: center
 # this needs another R package
+# simply using the ape package and running `plot(tree)` will also work
 library(ggtree)
 
 nodes <- ts_nodes(tree) %>%
   as_tibble %>% 
   dplyr::select(node = phylo_id, pop)
 
-p_tree <- ggtree(tree) %<+% df +
+p_tree <- ggtree(tree) %<+% nodes +
   geom_tiplab(aes(color = pop, fill = pop)) +
   guides(color = "none") +
   scale_x_continuous(limits = c(-7e6, 900e3))
 revts(p_tree)
 ```
 
-<center>**Maybe this is introgression?</center>
-
 
 ## Extracting a tree #1908
 
 ```{r}
-tree <- ts_phylo(ts_small, 1909)
+tree <- ts_phylo(ts_small, 1909, quiet = TRUE)
 ```
 
 ```{r}
 #| code-fold: true
 #| fig-align: center
 # this needs another R package
+# simply using the ape package and running `plot(tree)` will also work
 library(ggtree)
 
 nodes <- ts_nodes(tree) %>%
   as_tibble %>%
   dplyr::select(node = phylo_id, pop)
 
-p_tree <- ggtree(tree) %<+% df +
+p_tree <- ggtree(tree) %<+% nodes +
   geom_tiplab(aes(color = pop, fill = pop)) +
   guides(color = "none") +
   scale_x_continuous(limits = c(-7e6, 900e3))
@@ -1649,16 +1650,18 @@ revts(p_tree)
 ```
 
 ::: fragment
-<center>**Maybe this is introgression?</center>
+<center>**Maybe this is introgression?**</center>
 :::
 
-<!-- # Bonus exercise -->
 
-<!-- ## Try to implement something relevant for your work -->
 
-<!-- -   Program a demographic model for your species of interest -->
-<!-- -   Choose a statistic whose value "true value" you know from the literature (divergence? diversity? f4-statistic? ancestry proportion? divergence?) -->
-<!-- - Try to replicate the statistic in the simulation -->
+# Bonus exercise
+
+## Try to implement something relevant for your own work
+
+-   Program a demographic model for your species of interest
+-   Choose a statistic whose value "true value" you know from the literature (divergence? diversity? f4-statistic? ancestry proportion?)
+- Try to replicate the statistic in a _slendr_ simulation using some of its `ts_<...>()` tree-sequence functions!
 
 
 
