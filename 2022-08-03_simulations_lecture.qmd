@@ -1,5 +1,6 @@
 ---
 title: "Simulations in population genetics"
+author: "Martin Petr (mp@bodkan.net)"
 format:
   revealjs:
     echo: true
@@ -24,9 +25,11 @@ format:
 
 ## Why simulations?
 
--   Intuition for behavior of popgen statistics in various scenarios
+<br>
+
+-   Intuition for behavior of statistics in various scenarios
 -   Fitting model parameters against empirical data (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
--   Grand truth for testing and development of statistical methods
+-   Ground truth for testing and method development
 
 ## **TODO** What does it mean to simulate a genome?
 
@@ -41,6 +44,10 @@ A chromosome is:
 -   Inherited from generation to generation (maybe with recombination)
 
 # Home-brewed single-locus simulations in R
+
+##
+
+<br>
 
 ```{r, setup}
 library(tidyverse)
@@ -78,7 +85,7 @@ for (gen_i in 2:generations) {
 p_traj
 ```
 
-## Single-locus simulation ($N$ = 500, $p_0 = 0.5$)
+## $N$ = 500, $p_0 = 0.5$
 
 ```{r}
 #| code-fold: true
@@ -94,6 +101,7 @@ abline(h = p_start, lty = 2, col = "red")
 **Output:** allele frequency trajectory vector
 
 ```{r}
+#| code-line-numbers: "|1|15"
 simulate <- function(N, p_start, generations) {
   # initialize an (empty) trajectory vector of allele frequencies
   p_traj<- rep(NA, generations)
@@ -147,7 +155,7 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 ```{r}
 #| code-fold: true
 #| fig-align: center
-reps <- replicate(50, simulate(N = 10000, p_start = 0.5, generations = 20000))
+reps <- replicate(20, simulate(N = 10000, p_start = 0.5, generations = 20000))
 
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 ```
@@ -158,15 +166,14 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 #| eval: false
 #| code-fold: true
 #| fig-align: center
-factors <- fractions(c(2, 1/2, 1/5, 1/10))
+factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
 matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", type = "l", lty = 1)
 abline(v = 10000 * factors, lwd = 5)
 ```
 
 ## Expected allele frequency distribution
 
-```{r, eval = !file.exists("/tmp/final_frequencies.rds")}
-#| eval: false
+```{r}
 #| echo: false
 p_start <- 0.5
 N <- 10000
@@ -177,7 +184,7 @@ final_frequencies <- parallel::mclapply(
     f <- factors[i]
     t <- as.integer(N * f)
     # get complete trajectories as a matrix (each column a single trajectory)
-    reps <- replicate(10000, simulate(N = N, p_start = p_start, generations = t))
+    reps <- replicate(50000, simulate(N = N, p_start = p_start, generations = t))
     # only keep the last slice of the matrix with the final frequencies
     data.frame(
       t = sprintf("t = %s * N", f),
@@ -187,8 +194,6 @@ final_frequencies <- parallel::mclapply(
   mc.cores = parallel::detectCores()
 ) %>% do.call(rbind, .)
 final_frequencies$t <- fct_rev(fct_relevel(final_frequencies$t, sprintf("t = %s * N", factors)))
-
-saveRDS(final_frequencies, "/tmp/final_frequencies.rds")
 ```
 
 ::: columns
@@ -199,9 +204,6 @@ saveRDS(final_frequencies, "/tmp/final_frequencies.rds")
 #| fig-align: center
 #| fig-height: 10
 #| fig-width: 10
-final_frequencies <- readRDS("/tmp/final_frequencies.rds")
-final_frequencies$t <- final_frequencies$t
-
 final_frequencies %>% .[.$freq > 0 & .$freq < 1, ] %>%
 ggplot() +
   geom_histogram(aes(freq, y = ..density.., fill = t), position = "identity", bins = 100, alpha = 0.75) +
@@ -229,9 +231,13 @@ ggplot() +
 
 # Bonus exercise
 
-If you're bored later at home, try adding selection to this model!
+If you're bored later, try adding selection to this model!
 
 In each generation, weight the frequencies based on fitness of each of the tree genotypes.
+
+If you need a hint, take a look [here](https://github.com/bodkan/notebooks/blob/master/MLE_single_locus_selection.ipynb).
+
+# Why bother?
 
 <!-- ## Let's add selection! -->
 
@@ -309,17 +315,30 @@ In each generation, weight the frequencies based on fitness of each of the tree 
 
 ::::
 
+
+
 # {background-image="images/montypython.jpeg"}
 
-<h1 color="white" style="background-color: lightgray;vertical-align: bottom;">But now for something completely different...</h1>
+
+::: factor
+<h1 color="black" style="background-color: white">But now for something completely different.</h1>
+:::
 
 
 
-# Let's do "real" simulations
+
+# {background-image="images/montypython.jpeg"}
+
+
+<h1 color="black" style="background-color: white">Let's do "real" simulations!</h1>
+
+
+
+
 
 ## There are many pieces of simulation software
 
-The most famous and widely used are ([SLiM](https://messerlab.org/slim/)) and ([msprime](https://tskit.dev/msprime/docs/stable/intro.html)).
+The most famous and widely used are [SLiM](https://messerlab.org/slim/) and [msprime](https://tskit.dev/msprime/docs/stable/intro.html).
 
 ::: fragment
 They are both extremely powerful...
@@ -1026,6 +1045,56 @@ ts
 
 
 
+## Example: allele frequency spectrum
+
+```{r}
+#| echo: false
+set.seed(42)
+```
+
+:::: columns
+
+:::  {.column width="55%"}
+```{r}
+#| code-line-numbers: "|3-6|11-16"
+# sample 5 individuals
+# (i.e. 10 chromosomes)
+samples <-
+  ts_samples(ts) %>%
+  sample_n(5) %>%
+  pull(name)
+
+# compute allele frequency
+# spectrum from the given set
+# of individuals
+afs <- ts_afs(
+  ts, list(samples),
+  polarised = TRUE
+)
+
+afs
+```
+:::
+
+::: {.column width="2%"}
+&nbsp;
+:::
+
+::: {.column width="43%"}
+::: fragment
+```{r}
+#| fig-height: 10
+plot(afs, type = "b",
+     xlab = "allele count bin",
+     ylab = "frequency")
+```
+:::
+:::
+
+::::
+
+
+
 
 ## What we have learned so far
 
@@ -1196,7 +1265,7 @@ b <- population("b", time = 3500, N = 4000, parent = a)
 x1 <- population("x1", time = 3800, N = 8000, parent = c)
 x2 <- population("x2", time = 4000, N = 10000, parent = x1)
 
-gf <- gene_flow(from = b, to = x1, start = 5100, end = 5500, rate = 0.3)
+gf <- gene_flow(from = b, to = x1, start = 5500, end = 6000, rate = 0.3)
 
 model <- compile_model(
   populations = list(a, b, x1, x2, c, o), gene_flow = gf,
@@ -1465,7 +1534,7 @@ Simulate tree sequence, add mutations on it:
 
 ```{r}
 ts <- msprime(model, samples = schedule,
-          sequence_length = 50e6, recombination_rate = 1e-8) %>%
+              sequence_length = 100e6, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8)
 ```
 
@@ -1513,11 +1582,12 @@ x_inds$f4 <- f4_result$f4
 #| code-fold: true
 #| fig-align: center
 ggplot(x_inds) +
-  geom_rect(aes(xmin = 5100, xmax = 5500, ymin = -Inf, ymax = Inf), alpha = 0.75, fill = "gray") +
+  geom_rect(aes(xmin = 5500, xmax = 6000, ymin = -Inf, ymax = Inf), alpha = 0.5, fill = "gray") +
   geom_jitter(aes(time, f4, color = pop)) +
   geom_line(data = . %>% group_by(pop, time) %>% summarise(f4 = mean(f4)),
             aes(time, f4, color = pop), size = 2) +
-  geom_hline(yintercept = 0, linetype = 2, size = 1)
+  geom_hline(yintercept = 0, linetype = 2, size = 1) +
+  theme_minimal()
 ```
 
 
@@ -1662,7 +1732,7 @@ revts(p_tree)
 ```
 
 ::: fragment
-<center>**Maybe this is introgression?**</center>
+<center>**Introgression!**</center>
 :::
 
 
