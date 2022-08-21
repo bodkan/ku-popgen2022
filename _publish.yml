@@ -1,0 +1,4 @@
+- source: popgen2022.qmd
+  quarto-pub:
+    - id: 404a7c2d-e22f-4856-9e5e-7510da28ab20
+      url: 'https://quartopub.com/sites/bodkan/simulations-in-population-genetics'

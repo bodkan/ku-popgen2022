@@ -19,7 +19,7 @@ format:
 ::: {.column width="30%"}
 ![](images/crow.jpeg)
 
-[James F. Crow](https://en.wikipedia.org/wiki/James_F._Crow)
+[James F. Crow](https://en.wikipedia.org/wiki/James_F._Crow) -- [interview](http://www.gnxp.com/blog/2006/06/10-questions-for-jim-crow.php)
 :::
 :::
 
@@ -163,7 +163,6 @@ matplot(reps, ylim = c(0, 1), xlab = "generations", ylab = "allele frequency", t
 ## $N$ = 10000, $p_0 = 0.5$ (20 replicates)
 
 ```{r}
-#| eval: false
 #| code-fold: true
 #| fig-align: center
 factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
@@ -174,7 +173,7 @@ abline(v = 10000 * factors, lwd = 5)
 ## Expected allele frequency distribution
 
 ```{r}
-#| echo: false
+#| code-fold: true
 p_start <- 0.5
 N <- 10000
 factors <- fractions(c(3, 2, 1, 1/2, 1/5, 1/10))
@@ -184,7 +183,7 @@ final_frequencies <- parallel::mclapply(
     f <- factors[i]
     t <- as.integer(N * f)
     # get complete trajectories as a matrix (each column a single trajectory)
-    reps <- replicate(50000, simulate(N = N, p_start = p_start, generations = t))
+    reps <- replicate(10000, simulate(N = N, p_start = p_start, generations = t))
     # only keep the last slice of the matrix with the final frequencies
     data.frame(
       t = sprintf("t = %s * N", f),
@@ -199,7 +198,7 @@ final_frequencies$t <- fct_rev(fct_relevel(final_frequencies$t, sprintf("t = %s 
 ::: columns
 ::: {.column width="50%"}
 ```{r}
-#| echo: false
+#| code-fold: true
 #| fig-align: center
 #| fig-height: 10
 #| fig-width: 10
@@ -1692,7 +1691,7 @@ tree <- ts_phylo(ts_small, 1734, quiet = TRUE)
 library(ggtree)
 
 nodes <- ts_nodes(tree) %>%
-  as_tibble %>% 
+  as_tibble %>%
   dplyr::select(node = phylo_id, pop)
 
 p_tree <- ggtree(tree) %<+% nodes +
