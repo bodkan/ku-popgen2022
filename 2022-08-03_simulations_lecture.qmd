@@ -512,24 +512,29 @@ set.seed(42)
 
 # Let's get started
 
-## 
+## We will use `slendr` & `tidyverse`
+
+First run this:
 
 ```{r}
-library(slendr)
+library(tidyverse) # table processing/filtering and plotting
+
+library(slendr) # simulation and tree-sequence analysis
 ```
 
-If you get a message about missing Python modules, run:
+<br>If you get a message about missing Python modules, run:
 
 ```{r}
 #| eval: false
 setup_env()
 ```
 
-<center>_(ignore the message about missing SLiM)_</center>
+<center>**(ignore the message about missing SLiM)**</center>
 
-To check that everything is setup correctly, run:
+<br> To check that everything is setup correctly, run:
 
 ```{r}
+#| output: false
 check_env()
 ```
 
@@ -538,8 +543,8 @@ check_env()
 #
 
 <h1>_slendr_ workflow:<br></h1>
-<h2>building (complex) models<br>
-from simple components</h2>
+<b><h2>building (complex) models<br>
+from simple components</h2></b>
 
 
 ## Typical steps
@@ -579,7 +584,7 @@ pop1
 
 ## Programming population splits
 
-Splits are programmed using the `parent = <pop>` argument:
+Splits are indicated by the `parent = <pop>` argument:
 
 ```{r}
 pop2 <- population("pop2", N = 100, time = 50, parent = pop1)
@@ -623,7 +628,7 @@ pop2_exp <- resize(pop2, N = 10000, time = 500, end = 2000, how = "exponential")
 
 
 
-## Tidyverse-style pipe interface
+## Tidyverse-style [pipe](https://magrittr.tidyverse.org) interface
 
 Step size decrease:
 
@@ -645,10 +650,10 @@ pop2 <-
 
 <br>
 
-<center>**This accomplishes the same thing as the code on the previous slide, but is more "elegant".**</center>
+<center>**This accomplishes the same thing as the code on the previous slide, but it is a bit more "elegant".**</center>
 
 
-## Let's assume we have our model...
+## More complex full model
 
 ```{r}
 #| code-line-numbers: "|15-20"
@@ -700,33 +705,6 @@ model <- compile_model(
 
 <center>**Compilation takes a list of model components, performs internal consistency checks, returns a single model object.**</center>
 
-
-
-## 
-
-```{r}
-#| eval: false
-pop1 <- population("pop1", N = 1000, time = 1)
-
-pop2 <-
-  population("pop2", N = 1000, time = 300, parent = pop1) %>%
-  resize(N = 100, how = "step", time = 1000)
-
-pop3 <-
-  population("pop3", N = 1000, time = 400, parent = pop2) %>%
-  resize(N = 2500, how = "step", time = 800)
-
-pop4 <-
-  population("pop4", N = 1500, time = 500, parent = pop3) %>%
-  resize(N = 700, how = "exponential", time = 1200, end = 2000)
-
-pop5 <-
-  population("pop5", N = 100, time = 600, parent = pop4) %>%
-  resize(N = 50, how = "step", time = 900) %>% 
-  resize(N = 250, how = "step", time = 1200) %>% 
-  resize(N = 1000, how = "exponential", time = 1600, end = 2200) %>% 
-  resize(N = 400, how = "step", time = 2400)
-```
 
 
 ## Model visualization
@@ -787,7 +765,7 @@ ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
 
 ## What we usually *want*
 
-A full representation of the history of all of our samples:
+(As full as possible) a representation of our samples' history:
 
 <center>![](images/tree_sequence_diagram.png)</center>
 
@@ -813,7 +791,7 @@ By default, `msprime` function automatically loads the tree-sequence that the si
 ```{r}
 ts <- msprime(
   model,
-  sequence_length = 10e6,
+  sequence_length = 100e6,
   recombination_rate = 1e-8
 )
 ```
@@ -841,7 +819,7 @@ ts
 
 ![](images/slendr_tskit.png){width="120%"}
 
-This [R interface](https://www.slendr.net/reference/index.html#tree-sequence-loading-and-processing) links to Python methods implemented in [_tskit_](https://tskit.dev/tskit/docs/stable/python-api.html).
+This [R interface](https://www.slendr.net/reference/index.html#tree-sequence-loading-and-processing) links to Python methods implemented in [_tskit_](https://tskit.dev/tskit/docs/stable/python-api.html#statistics).
 
 </center>
 
@@ -853,6 +831,10 @@ Tree sequences make it possible to directly compute many quantities of interest 
 <center>![](images/tree_sequence_diagram.png)</center>
 
 # How do we use this in practice?
+
+#
+
+<h1>To analyze tree sequences, we need to refer to "samples"</h1>
 
 ## Extracting sample information
 
@@ -898,11 +880,11 @@ ts_samples(ts) %>% count(pop)
 Let's say we have the following model and we simulate a tree sequence from it.
 
 ```{r}
-#| code-line-numbers: "|1|2|5|6|4"
-pop <- population("pop", N = 10000, time = 100000)
-model <- compile_model(pop, generation_time = 1, direction = "backward")
+#| code-line-numbers: "|1|2|4"
+pop <- population("pop", N = 10000, time = 1)
+model <- compile_model(pop, generation_time = 1, simulation_length = 10000)
 
-ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
+ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
 ```
 
 <br>
@@ -920,7 +902,7 @@ set.seed(42)
 
 :::  {.column width="55%"}
 ```{r}
-#| code-line-numbers: "|3-6|11-12|14"
+#| code-line-numbers: "|3-6|11-16"
 # sample 5 individuals
 # (i.e. 10 chromosomes)
 samples <-
@@ -934,11 +916,8 @@ samples <-
 afs <- ts_afs(
   ts, list(samples),
   mode = "branch",
-  span_normalise = TRUE,
   polarised = TRUE
 )
-
-afs
 ```
 :::
 
@@ -971,36 +950,64 @@ ts
 
 ## How can we compute statistics?
 
-This is because of the duality between mutations and branch lengths (more [here](https://tskit.dev/tskit/docs/stable/stats.html)).
+There is a duality between mutations and branch lengths in trees (more [here](https://tskit.dev/tskit/docs/stable/stats.html)).
 
 <center>
 
 ![](images/tree_sequence_diagram.png)
 
-<br>
-
-<h3>What if we want mutations?</h3>
+<h3>But what if we want mutations?</h3>
 
 </center>
 
-## Adding mutations _after_ the simulation
-
-Coalescent and mutation processes can be decoupled!
+## Coalescent and mutation processes can be decoupled!
 
 <center>
 
 ![](images/tree_sequence_diagram.png)
 
+<h3>This means we can add mutations<br>_after_ the simulation.</h3>
+
 </center>
 
-## This is what allows efficient, massive simulations!
+
+
+
+## This allows efficient, massive simulations (especially with SLiM)
+
+:::: columns
+
+::: {.column width="25%"}
 
 ```{r}
-ts <- ts_mutate(ts, mutation_rate = 1e-8)
-
-ts
+#| eval: false
+ts_mutate(ts, mutation_rate = 1e-8)
 ```
 
+Or, with a shortcut:
+
+```{r}
+ts <-
+  msprime(
+    model,
+    sequence_length = 100e6,
+    recombination_rate = 1e-8
+  ) %>%
+  ts_mutate(mutation_rate = 1e-8)
+```
+
+:::
+
+::: {.column width="25%"}
+&nbsp;
+:::
+
+::: {.column width="50%"}
+#| echo: false
+ts
+:::
+
+::::
 
 
 
@@ -1070,125 +1077,11 @@ Use _slendr_ to simulate history of this species. Use this to guess the likely v
 
 ## Exercise #1 -- simulations on a grid
 
-```{r}
-#| output: false
-#| code-fold: true
-#| code-summary: "Show solution 'ii'"
-simulate_afs <- function(Ne) {
-  model_path <- tempfile()
-  on.exit(unlink(model_path, recursive = TRUE, force = TRUE))
-
-  pop <- population("pop", N = Ne, time = 100000)
-  model <- compile_model(pop, generation_time = 1, direction = "backward",
-                         path = model_path, overwrite = TRUE, force = TRUE)
-  
-  ts <-
-    msprime(model, sequence_length = 10e6, recombination_rate = 1e-8) %>%
-    ts_mutate(mutation_rate = 1e-8)
-  
-  samples <- ts_samples(ts) %>% sample_n(10) %>% pull(name)
-  
-  afs <- ts_afs(ts, list(samples), polarised = TRUE)
-  
-  afs
-}
-
-Ne_grid <- seq(from = 1000, to = 30000, by = 1000)
-
-afs_grid <- lapply(Ne_grid, simulate_afs)
-
-afs_observed <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218, 
-133, 173, 159, 142, 167, 129, 125, 143)
-
-# Plot the observed AFS and overlay the simulated AFS vectors on top of it
-plot(afs_observed, type = "b", col = "red", lwd = 3)
-for (i in seq_along(Ne_grid)) {
-  lines(afs_grid[[i]], lwd = 0.5)
-}
-
-# Compute mean-squared error of the AFS produced by each Ne value across the grid
-errors <- sapply(afs_grid, function(afs) {
-  sum((afs - afs_observed)^2) / length(afs)
-})
-
-# plot the errors, highlight the most likely value
-plot(Ne_grid, errors)
-abline(v = Ne_grid[which.min(errors)], col = "green")
-abline(v = TRUE_NE, col = "purple")
-legend("topright", legend = c(paste("inferred Ne =", Ne_grid[which.min(errors)]),
-                              paste("true Ne =", TRUE_NE)),
-       col = c("green", "purple"), lty = 2)
-
-# Plot the AFS again, highlighting the most likely spectrum
-plot(afs_observed, type = "b", col = "red", lwd = 1)
-for (i in seq_along(Ne_grid)) {
-  color <- if (i == which.min(errors)) "green" else "gray"
-  width <- if (i == which.min(errors)) 2 else 0.5
-  lines(afs_grid[[i]], lwd = width, col = color)
-}
-legend("topright", legend = paste("Ne =", Ne_grid[which.min(errors)]),
-       col = "green", lty = 2)
-```
-
-
+<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_1_grid.R)</h3></center>
 
 ## Exercise #1 -- ABC inference
 
-```{r}
-#| code-fold: true
-#| code-summary: "Show solution 'iii'"
-# Compute a single AFS given input Ne sampled from the prior, return the
-# error vs observed AFS together with the Ne
-compute_Ne_error <- function(Ne) {
-  prior <- seq(1000, 30000, by = 1)
-  Ne <- sample(prior, 1)
-
-  afs <- simulate_afs(Ne)
-
-  error <- sum((afs - afs_observed)^2) / length(afs)
-
-  data.frame(
-    Ne = Ne,
-    error = error
-  )
-} 
-
-run_abc <- function(n_iterations, afs_observed) {
-  # generate a list of all individual ABC runs (pairs Ne-vs-error)
-  abc_runs <- mclapply(1:n_iterations, compute_Ne_error)
-  # join all runs into a single data frame and return it 
-  abc_df <- do.call(rbind, abc_runs)
-  abc_df
-}
-
-if (file.exists("data/abc_results.rds")) {
-  abc_results <- readRDS("data/abc_results.rds")
-} else {
-  abc_results <- run_abc(1000, afs_observed)
-  saveRDS(abc_results, "data/abc_results.rds")
-}
-
-
-error_cutoff <- quantile(abc_results$error, 0.05)
-
-ggplot(abc_results, aes(Ne)) +
-  geom_histogram(bins = 100) +
-  ggtitle("Prior Ne distribution") +
-  xlim(1000, 30000)
-
-ggplot(abc_results[abc_results$error < error_cutoff, ], aes(Ne)) +
-  geom_histogram(bins = 100) +
-  geom_vline(xintercept = TRUE_NE, color = "red") +
-  ggtitle("Posterior Ne distribution") +
-  xlim(1000, 30000)
-
-# summarise the 95% HPD interval of the Ne
-filter(abc_results, error < error_cutoff) %>% pull(Ne) %>% summary
-
-TRUE_NE
-```
-
-
+<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_1_abc.R)</h3></center>
 
 ## Exercise #2
 
@@ -1234,52 +1127,7 @@ plot_model(model)
 ## Exercise #2 -- solution
 
 
-```{r}
-#| code-fold: true
-#| code-summary: "Show solution"
-#| fig-align: center
-#| fig-width: 10
-Ne_start <- 6543
-Ne_factor <- 3
-
-pop1 <- population("s1", N = Ne_start, time = 1)
-
-pop2 <-
-  population("s2", N = Ne_start, time = 2, parent = pop1) %>%
-  resize(how = "step", N = as.integer(Ne_factor * Ne_start), time = 5000)
-
-pop3 <-
-  population("s3", N = Ne_start, time = 2, parent = pop1) %>%
-  resize(how = "step", N = as.integer(Ne_start / Ne_factor), time = 5000)
-
-model <- compile_model(
-  populations = list(pop1, pop2, pop3),
-  generation_time = 1,
-  simulation_length = 10000
-)
-
-ts <-
-  msprime(model, sequence_length = 10e6, recombination_rate = 1e-8) %>%
-  ts_mutate(mutation_rate = 1e-8)
-
-samples <- ts_samples(ts) %>%
-  group_by(pop) %>%
-  sample_n(20)
-
-pop1_names <- filter(samples, pop == "s1")$name
-pop2_names <- filter(samples, pop == "s2")$name
-pop3_names <- filter(samples, pop == "s3")$name
-
-afs1 <- ts_afs(ts, list(pop1_names), polarised = TRUE)
-afs2 <- ts_afs(ts, list(pop2_names), polarised = TRUE)
-afs3 <- ts_afs(ts, list(pop3_names), polarised = TRUE)
-
-plot(afs2, type = "l", col = "blue", cex = 0.2, xlab = "allele count bin", ylab = "frequency")
-lines(afs1, type = "l", cex = 0.2)
-lines(afs3, type = "l", col = "green", cex = 0.2)
-legend("topright", legend = c("constant", "expansion", "contraction"),
-       fill = c("black", "blue", "green"))
-```
+<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_2.R)</h3></center>
 
 
 
@@ -1287,7 +1135,6 @@ legend("topright", legend = c("constant", "expansion", "contraction"),
 
 
 # What else can _slendr_ do?
-
 
 
 
@@ -1521,6 +1368,7 @@ By default, _slendr_ records every individual living at the end of the simulatio
 ::: fragment
 
 ```{r}
+#| echo: false
 model <- read_model(f4_model_path)
 ```
 
@@ -1589,6 +1437,7 @@ ts <-
 ```
 
 . . .
+
 <br>
 
 ```{r}
@@ -1596,6 +1445,7 @@ ts_f4(ts, "x2_1", "x1_1", "b_1" , "o_1")
 ```
 
 . . .
+
 <br>
 ```{r}
 ts_f4(ts, "x2_100", "x1_100", "b_1" , "o_1")
