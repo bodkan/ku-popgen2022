@@ -44,11 +44,11 @@ run_abc <- function(n_iterations, afs_observed) {
   abc_df
 }
 
-if (file.exists("data/abc_results.rds")) {
-  abc_results <- readRDS("data/abc_results.rds")
+if (file.exists("exercise_1_abc.rds")) {
+  abc_results <- readRDS("exercise_1_abc.rds")
 } else {
   abc_results <- run_abc(1000, afs_observed)
-  saveRDS(abc_results, "data/abc_results.rds")
+  saveRDS(abc_results, "exercise_1_abc.rds")
 }
 
 

@@ -199,7 +199,6 @@ final_frequencies$t <- fct_rev(fct_relevel(final_frequencies$t, sprintf("t = %s 
 ::: columns
 ::: {.column width="50%"}
 ```{r}
-#| eval: false
 #| echo: false
 #| fig-align: center
 #| fig-height: 10
@@ -320,7 +319,7 @@ If you need a hint, take a look [here](https://github.com/bodkan/notebooks/blob/
 # {background-image="images/montypython.jpeg"}
 
 
-::: factor
+::: fragment
 <h1 color="black" style="background-color: white">But now for something completely different.</h1>
 :::
 
@@ -998,7 +997,7 @@ There is a duality between mutations and branch lengths in trees (more [here](ht
 
 :::: columns
 
-::: {.column width="42%"}
+::: {.column width="40%"}
 
 ::: {.fragment}
 ```{r}
@@ -1031,7 +1030,7 @@ ts <- msprime(
 &nbsp;
 :::
 
-::: {.column width="57%"}
+::: {.column width="59%"}
 
 ::: {.fragment}
 ```{r}
@@ -1056,7 +1055,6 @@ set.seed(42)
 
 :::  {.column width="55%"}
 ```{r}
-#| code-line-numbers: "|3-6|11-16"
 # sample 5 individuals
 # (i.e. 10 chromosomes)
 samples <-
