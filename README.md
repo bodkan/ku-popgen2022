@@ -1,9 +1,10 @@
-# Simulation lecture for the PopGen 2022 course
+# Simulation lecture for PopGen 2022
 
 ## Prerequisites
 
 -   Working R installation (at least R 3.6, preferably 4.x)
 -   RStudio highly recommended
+-   macOS or Linux (but Windows should work too! see the bottom of this page)
 
 ## Installation instructions
 
@@ -72,4 +73,4 @@ If this runs without error and you get a small summary table from the `ts` objec
 
 Reach out to the organizes (ideally Fernando) and ask them to get help from me (Martin P.). Or find me in person.
 
-The software I will be teaching is currently fully supported on macOS and Linux. However, the parts we'll be covering in the lecture and exercises should also work on Windows. The only thing that will not work on Windows for the moment are spatial *slendr* simulations using SLiM (but we won't be using those in the course).
+The software I will be teaching is currently fully supported on macOS and Linux. However, the parts we'll be covering in the lecture and exercises should also work on Windows. The only thing that will not work on Windows for the moment are spatial *slendr* simulations using SLiM but we won't be using those in the course, so this is not a problem.
