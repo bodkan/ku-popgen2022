@@ -56,4 +56,5 @@ ggplot(europeans, aes(time, ancestry)) +
   geom_point() +
   geom_smooth(method = "lm", linetype = 2, color = "red", size = 0.5) +
   xlim(40000, 0) + coord_cartesian(ylim = c(0, 0.1)) +
-  labs(x = "time [years ago]", y = "Neanderthal ancestry proportion")
+  labs(x = "time [years ago]", y = "Neanderthal ancestry proportion") +
+  theme_minimal()
