@@ -977,34 +977,47 @@ There is a duality between mutations and branch lengths in trees (more [here](ht
 
 :::: columns
 
-::: {.column width="25%"}
+::: {.column width="42%"}
 
+::: {.fragment}
 ```{r}
 #| eval: false
-ts_mutate(ts, mutation_rate = 1e-8)
+ts_mutated <- ts_mutate(
+  ts,
+  mutation_rate = 1e-8
+)
 ```
+:::
 
+::: {.fragment}
 Or, with a shortcut:
 
 ```{r}
-ts <-
-  msprime(
-    model,
-    sequence_length = 100e6,
-    recombination_rate = 1e-8
-  ) %>%
-  ts_mutate(mutation_rate = 1e-8)
+ts <- msprime(
+  model,
+  sequence_length = 100e6,
+  recombination_rate = 1e-8
+) %>%
+  ts_mutate(
+    mutation_rate = 1e-8
+  )
 ```
+:::
 
 :::
 
-::: {.column width="25%"}
+::: {.column width="1%"}
 &nbsp;
 :::
 
-::: {.column width="50%"}
+::: {.column width="57%"}
+
+::: {.fragment}
+```{r}
 #| echo: false
 ts
+```
+:::
 :::
 
 ::::
@@ -1168,13 +1181,12 @@ gf <- list(
 
 
 
-## Let's build another more complex model
+## Let's build another toy model
 
 ```{r}
-#| output-location: fragment
+#| code-fold: true
 #| fig-width: 7
 #| fig-align: center
-#| echo: false
 o <- population("o", time = 1, N = 100)
 c <- population("c", time = 2500, N = 500, parent = o)
 a <- population("a", time = 3000, N = 2000, parent = c)
@@ -1182,7 +1194,7 @@ b <- population("b", time = 3500, N = 4000, parent = a)
 x1 <- population("x1", time = 3800, N = 8000, parent = c)
 x2 <- population("x2", time = 4000, N = 10000, parent = x1)
 
-gf <- gene_flow(from = b, to = x1, start = 5100, end = 5400, rate = 0.3)
+gf <- gene_flow(from = b, to = x1, start = 5100, end = 6000, rate = 0.3)
 
 model <- compile_model(
   populations = list(a, b, x1, x2, c, o), gene_flow = gf,
@@ -1191,7 +1203,7 @@ model <- compile_model(
 
 plot_model(model, proportions = TRUE)
 
-ts <- msprime(model, sequence_length = 25e6, recombination_rate = 1e-8) %>%
+ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8)
 ```
 
@@ -1212,6 +1224,10 @@ model <- compile_model(
 
 :::: {.columns}
 
+::: {.column width="48%"}
+
+Extract a list of lists of individuals' names for each population:
+
 ```{r}
 samples <-
   ts_samples(ts) %>%
@@ -1219,11 +1235,26 @@ samples <-
   lapply(pull, "name")
 ```
 
-<br>
+:::
+
+::: {.column width="2%"}
+&nbsp;
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+
+Compute diversity in each population:
 
 ```{r}
-ts_diversity(ts, samples) %>% arrange(diversity)
+ts_diversity(ts, samples) %>%
+  arrange(diversity)
 ```
+
+:::
+
+:::
 
 ::::
 
@@ -1234,23 +1265,8 @@ ts_diversity(ts, samples) %>% arrange(diversity)
 ## Program the following model in *slendr*
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Show a solution"
-
-chimp <- population("CH", time = 7e6, N = 7000)
-
-afr <- population("AFR", parent = chimp, time = 6e6, N = 10000)
-eur <- population("EUR", parent = afr, time = 70e3, N = 5000)
-
-alt <- population("ALT", parent = afr, time = 700e3, N = 500)
-vi <- population("VI", parent = alt, time = 120e3, N = 1000)
-
-gf <- gene_flow(from = vi, to = eur, rate = 0.03, start = 50000, end = 40000)
-
-model <- compile_model(
-  populations = list(chimp, alt, vi, afr, eur), gene_flow = gf,
-  generation_time = 30
-)
+#| echo: false
+source("solutions/exercise_3.R")
 ```
 
 ```{r}
@@ -1264,17 +1280,19 @@ cowplot::plot_grid(
 )
 ```
 
+
+
 ## Parameter values
 
--   "CH" outgroup population at time 7 Mya ($N_e$ = 7k)
+-   "CH" outgroup at time 7 Mya ($N_e$ = 7k)
 
--   "AFR" population splitting from "CH" at 6 Mya ($N_e$ = 10k)
+-   "AFR" splitting from "CH" at 6 Mya ($N_e$ = 10k)
 
--   "ALT" population splitting from "AFR" at 700 kya ($N_e$ = 500)
+-   "ALT" splitting from "AFR" at 700 kya ($N_e$ = 500)
 
--   "VI" population splitting from "ALT" at 120 kya ($N_e$ = 1k)
+-   "VI" splitting from "ALT" at 120 kya ($N_e$ = 1k)
 
--   "EUR" population splitting from "AFR" at 70 kya ($N_e$ = 5k)
+-   "EUR" splitting from "AFR" at 70 kya ($N_e$ = 5k)
 
 -   gene flow from "VI" to "EUR" at 3% over 50-40 kya
 
@@ -1283,26 +1301,37 @@ Then simulate 100Mb sequence with `msprime()`, using recombination rate 1e-8 per
 
 
 
+## Exercise #3 -- solution
 
-## Exercise #4
+<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_3.R)</h3></center>
 
-:::: columns
+
+# Exercise #4
+
+## Diversity and divergence
+
+
+:::: {.columns}
+
+::: {.column width="60%"}
+Use `ts_diversity()` to compute diversity in each simulated population (`CH`, `AFR`, ...).
+
+Does the result correspond to what you would expect based on the demographic history?
+
+What about pairwise genetic divergence between all populations (`ts_divergence()`)? Do your results recapitulate phylogenetic relationships?
+:::
 
 ::: {.column width="40%"}
-Use the _slendr_ function `ts_diversity()` to compute nucleotide diversity in each simulated population (`CH`, `AFR`, ...).
 
-Does the result correspond to what you would expect based on the programmed demographic history?
-
-What about pairwise genetic divergence between all populations (`ts_divergence()`)? Do your results recapitulate phylogenetic relationships from the figure?
-:::
-
-::: {.column}
 ```{r}
 #| echo: false
+#| fig-height: 10
 plot_model(model, log = TRUE, proportions = TRUE)
 ```
+
 :::
 
+::::
 
 
 
@@ -1327,7 +1356,7 @@ ts_diversity(ts, sample_sets = sample_names) %>% arrange(diversity)
 
 :::: columns
 
-::: column
+::: {.column width="40%"}
 ```{r}
 #| code-fold: true
 divergence <-
@@ -1338,7 +1367,7 @@ divergence
 ```
 :::
 
-::: column
+::: {.column width="60%"}
 ```{r}
 #| code-fold: true
 divergence %>%
@@ -1393,7 +1422,7 @@ schedule <- rbind(x_schedule, abco_schedule)
 The schedule can be used in an `msprime()` call like this:
 
 ```{r}
-ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8,
+ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8,
               samples = schedule)
 ```
 
@@ -1401,7 +1430,7 @@ ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8,
 
 
 
-## Computing $f_4$ statistic
+## Computing $f_4$ statistic -- `ts_f4()`
 
 
 
@@ -1419,7 +1448,7 @@ plot_model(model)
 
 ::: {.column width="40%"}
 
-Having simulated data from this model, can we detect gene flow from _b_ into _x1_ as we have learned in the lecture on $f$-statistics?
+Having simulated data from this model, can we detect gene flow from _b_ into _x1_?
 
 :::
 
@@ -1429,9 +1458,10 @@ Having simulated data from this model, can we detect gene flow from _b_ into _x1
 
 ## Computing $f_4$ statistic -- `ts_f4()`
 
+Simulate tree sequence, add mutations on it:
+
 ```{r}
-ts <-
-  msprime(model, samples = schedule,
+ts <- msprime(model, samples = schedule,
           sequence_length = 50e6, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8)
 ```
@@ -1441,33 +1471,46 @@ ts <-
 <br>
 
 ```{r}
-ts_f4(ts, "x2_1", "x1_1", "b_1" , "o_1")
+ts_f4(ts, "x1_1", "x2_1", "b_1" , "o_1")
 ```
 
 . . .
 
 <br>
+
 ```{r}
-ts_f4(ts, "x2_100", "x1_100", "b_1" , "o_1")
+ts_f4(ts, "x1_100", "x2_100", "b_1" , "o_1")
 ```
 
 
 ## Computing $f_4$ statistic for all `x` individuals
 
 ```{r}
+# extract information about samples from populations x1 and x2
 x_inds <- ts_samples(ts) %>% filter(pop %in% c("x1", "x2"))
 
+# create a vector of individual's names
+# (used as input in ts_<...>() functions
 x_names <- x_inds$name
 
-f4_result<- map_dfr(x_names, function(w) ts_f4(ts, W = w, X = "c_1", Y = "b_1" , Z = "o_1"))
+# iterate over all sample names, compute
+# f4(X, C; B, O)
+f4_result<- map_dfr(
+  x_names,
+  function(w) ts_f4(ts, W = w, X = "c_1", Y = "b_1" , Z = "o_1")
+)
 
+# add the f4 value as a column to the sample information table
 x_inds$f4 <- f4_result$f4
 ```
 
+## Computing $f_4$ statistic for all `x` individuals
+
 ```{r}
 #| code-fold: true
+#| fig-align: center
 ggplot(x_inds) +
-  geom_rect(aes(xmin = 5100, xmax = 5400, ymin = -Inf, ymax = Inf), alpha = 0.75, fill = "gray") +
+  geom_rect(aes(xmin = 5100, xmax = 6000, ymin = -Inf, ymax = Inf), alpha = 0.75, fill = "gray") +
   geom_jitter(aes(time, f4, color = pop)) +
   geom_line(data = . %>% group_by(pop, time) %>% summarise(f4 = mean(f4)),
             aes(time, f4, color = pop), size = 2) +
@@ -1482,51 +1525,78 @@ ggplot(x_inds) +
 
 
 
-# Exercise #X
+# Exercise #5
 
-## Compute $f_4$-ratio estimate of Neanderthal ancestry
+## Compute Neanderthal ancestry trajectory using $f_4$-ratio statistic
 
-- Schedule sampling of early-modern
+1. Take your model of Neanderthal introgression
+
+2. Implement temporal sampling of individuals:
+"EUR" individuals (perhaps one genome every 1000 years between 40 kya and present-day)
+
+3. Compute $f_4$-ratio statistic using:
+
+```{r}
+#| eval: false
+ts_f4ratio(
+  ts,
+  X = '<vector of "European" individuals>',
+  A = '<"Altai" individual>',
+  C = '<"African" individual>',
+  O = '<"Chimp" individual>'
+)
+```
+
+4. Plot the estimated trajectory of Neanderthal ancestry in Europe over the last 40 thousand years.
+
+
+# Exercise #5 -- solution
+
+
+
+
+
 # Bonus exercise
 
 ## Try to implement something relevant for your work
 
 -   Program a demographic model for your species of interest
--   Compute a statistic whose value you "know" (diversity? f4-statistic? divergence?) and try to replicate it
+-   Choose a statistic whose value "true value" you know from the literature (divergence? diversity? f4-statistic? ancestry proportion? divergence?)
+- Try to replicate the statistic in the simulation
 
 
 
 
-## _Simplifying_ a tree sequence
+<!-- ## _Simplifying_ a tree sequence -->
 
-```{r}
-#| echo: false
-model <- read_model(f4_model_path)
-ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8)
-```
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- model <- read_model(f4_model_path) -->
+<!-- ts <- msprime(model, sequence_length = 50e6, recombination_rate = 1e-8) -->
+<!-- ``` -->
 
-```{r}
-ts_small <- ts_simplify(ts, simplify_to = c("o_1", "a_1", "b_1", "c_1", "x1_1", "x2_1"))
+<!-- ```{r} -->
+<!-- ts_small <- ts_simplify(ts, simplify_to = c("o_1", "a_1", "b_1", "c_1", "x1_1", "x2_1")) -->
 
-ts_small
-```
+<!-- ts_small -->
+<!-- ``` -->
 
-## Extracting a tree
+<!-- ## Extracting a tree -->
 
-```{r}
-tree <- ts_phylo(ts_small, 42)
+<!-- ```{r} -->
+<!-- tree <- ts_phylo(ts_small, 42) -->
 
-tree
-```
+<!-- tree -->
+<!-- ``` -->
 
-## Plotting a tree
+<!-- ## Plotting a tree -->
 
-```{r}
-library(ape)
+<!-- ```{r} -->
+<!-- library(ape) -->
 
-plot(tree)
-nodelabels()
-```
+<!-- plot(tree) -->
+<!-- nodelabels() -->
+<!-- ``` -->
 
 
 
