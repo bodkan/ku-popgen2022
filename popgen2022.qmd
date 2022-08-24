@@ -4,7 +4,6 @@ author: "Martin Petr (mp@bodkan.net)"
 format:
   revealjs:
     echo: true
-    eval: false
     code-line-numbers: false
     fig-align: center
     slide-number: true
@@ -405,6 +404,8 @@ If you need a hint, take a look [here](https://github.com/bodkan/notebooks/blob/
 
 ## There are many pieces of simulation software
 
+<br>
+
 The most famous and widely used are [SLiM](https://messerlab.org/slim/) and [msprime](https://tskit.dev/msprime/docs/stable/intro.html).
 
 ::: fragment
@@ -416,7 +417,9 @@ They are both extremely powerful...
 :::
 
 ::: fragment
-**We will learn simulation concepts using [*slendr*](http://www.slendr.net), a convenient R interface to both SLiM and msprime.**
+<br>
+
+<center>**We will learn simulation concepts using [*slendr*](http://www.slendr.net), a convenient R interface to both SLiM and msprime.**</center>
 :::
 
 # SLiM
