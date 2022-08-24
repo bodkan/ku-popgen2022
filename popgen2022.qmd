@@ -419,7 +419,7 @@ They are both extremely powerful...
 ::: fragment
 <br>
 
-<center>**We will learn simulation concepts using [*slendr*](http://www.slendr.net), a convenient R interface to both SLiM and msprime.**</center>
+<center>**We will learn simulation concepts using [*slendr*](http://www.slendr.net),<br>a convenient R interface to both SLiM and msprime.**</center>
 :::
 
 # SLiM
