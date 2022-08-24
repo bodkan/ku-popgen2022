@@ -1,5 +1,6 @@
 library(slendr)
 library(tidyverse)
+library(parallel)
 
 simulate_afs <- function(Ne) {
   model_path <- tempfile()

@@ -4,6 +4,7 @@ author: "Martin Petr (mp@bodkan.net)"
 format:
   revealjs:
     echo: true
+    eval: false
     code-line-numbers: false
     fig-align: center
     slide-number: true
@@ -23,31 +24,102 @@ format:
 :::
 :::
 
-## Why simulations?
+# Why simulate genomic data?
+
+1.   Exploring expected behavior of statistics
+2.   Fitting model parameters (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
+3.   Ground truth for method development
+
+## Exploring expected behavior of statistics
+
+<center>![](images/fstats_sims.png)</center>
+
+::: aside
+Image from [Peter (2016)](https://academic.oup.com/genetics/article/202/4/1485/5930214)
+:::
+
+## Fitting model parameters (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
+
+<center>![](images/abc_scheme.png){width="50%"}</center>
+
+::: aside
+Image from [Wikipedia on ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation)
+:::
+
+
+## Ground truth for testing and method development
+
+<center>![](images/mcmc.png)</center>
+
+::: aside
+Image from [Schiffels and Durbin (2014)](https://www.nature.com/articles/ng.3015)
+:::
+
+
+
+# What does it mean to simulate a genome?
+
+. . . 
+
+<br> How would you design an algorithm for a popgen simulation?</h2>
+
+. . .
+
+<br>What minimum components are needed for the program to to be useful?
+
+# If we want to simulate population genetics
 
 <br>
 
--   Intuition for behavior of statistics in various scenarios
--   Fitting model parameters against empirical data (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
--   Ground truth for testing and method development
+. . .
 
-## **TODO** What does it mean to simulate a genome?
+We need _populations_.
 
-A chromosome is:
+. . .
 
--   a linear sequence of nucleotides
--   which accumulates mutations in each generation
+We need _genetics_.
 
-## **TODO** How do we "get" a genome in real life?
+# A chromosome is...
 
--   A chromosome is a linear sequence of nucleotides.
--   Inherited from generation to generation (maybe with recombination)
+<br>
+
+. . . 
+
+...a linear sequence of nucleotides...
+
+  - a list of characters (A/G/C/T nucleotides)
+  - a list of 0 or 1 values (alternative/derived allele)
+
+. . .
+
+... which accumulates mutations every generation at a given _mutation rate_.
+
+# A population is...
+
+<br>
+
+A collection of _individuals_ at a given point in time.
+
+. . .
+
+Each individual carrying two homologous _chromosomes_ inherited from two parents in the previous generation.
+
+. . .
+
+Chromosomes recombine at a certain _recombination rate_.
+
 
 # Home-brewed single-locus simulations in R
+
+<br>
+
+Let's make the algorithm even more minimal.
 
 ##
 
 <br>
+
+Some basic setup:
 
 ```{r, setup}
 library(tidyverse)
@@ -1734,7 +1806,7 @@ revts(p_tree)
 
 
 
-# Bonus exercise
+# Bonus exercise #1
 
 ## Try to implement something relevant for your own work
 
@@ -1743,4 +1815,17 @@ revts(p_tree)
 - Try to replicate the statistic in a _slendr_ simulation using some of its `ts_<...>()` tree-sequence functions!
 
 
+
+
+# Bonus exercise #2
+
+## Try to implement your own D-statistic
+
+You can extract data from a tree sequence in the form of a genotype table using the function `ts_genotypes()`.
+
+This function returns a simple R data frame:
+
+- each column for an individual
+- each row for a site
+- each cell giving the number of derived alleles in that individual at that site
 
