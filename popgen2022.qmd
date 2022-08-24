@@ -1,8 +1,9 @@
 ---
 title: "Simulations in population genetics"
-author: "Martin Petr (mp@bodkan.net)"
+author: " [PopGen 2022](http://www.popgen.dk/popgen22/) --- Martin Petr (mp@bodkan.net)"
 format:
   revealjs:
+    eval: false
     echo: true
     code-line-numbers: false
     fig-align: center
@@ -112,7 +113,7 @@ Chromosomes recombine at a certain _recombination rate_.
 
 <br>
 
-Let's make the algorithm even more minimal.
+Let's make the algorithm even more minimal by focusing on an evolution of a single mutation across time.
 
 ##
 
@@ -863,6 +864,97 @@ ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
 ::: fragment
 <center>**And this is exactly what tree sequences give us.**</center>
 :::
+
+## How does it work?
+
+This simulates 20 $\times$ 10000 chromosomes of 100 Mb.
+
+In less than 30 seconds.
+
+That's a crazy amount of data!
+
+<center>**And it only requires 66.1 Mb of memory!**</center>
+
+```{r}
+ts <-
+  population("pop", time = 100000, N = 10000) %>%
+  compile_model(generation_time = 1, direction = "backward") %>%
+  msprime(sequence_length = 100e6, recombination_rate = 1e-8)
+
+ts
+```
+
+## How does this work?!
+
+. . .
+
+<center>![](images/tables.jpeg)<center>
+
+## Tree-sequence tables ([link](https://tskit.dev/tutorials/tables_and_editing.html))
+
+:::: row
+::: columns
+
+::: {.column width="60%"}
+A tree (sequence) can be represented by tables of:
+
+- nodes ("chromosomes")
+- edges (branches) between nodes
+- mutations on edges
+<br>
+- individuals (who carry nodes)
+- populations
+
+:::
+
+::: {.column width="40%"}
+<br>
+<center>![](images/tree_diagram.png)</center>
+:::
+
+:::
+::::
+
+
+::: fragment
+<center><h2>**A set of such tables is a tree sequence.**</h2></center>
+:::
+
+## Tree-sequence tables in practice
+
+:::: columns
+
+::: {.column="50%"}
+```{r}
+ts
+```
+
+```{r}
+#| echo: false
+set.seed(123)
+# make a tiny example simplified tree sequence
+ts_tiny <- ts_samples(ts) %>% sample_n(5) %>% pull(name) %>% ts_simplify(ts, simplify_to = .)
+# extract tree #1 as an ape tree and also a tskit tree
+t_phylo <- ts_phylo(ts_tiny, 1, quiet = TRUE)
+t_tskit <- ts_tree(ts_tiny, 1)
+
+# plot the phylo tree with ape
+library(ape)
+plot(t); nodelabels(t$node.label)
+```
+
+::: {.column width="50%"}
+```{r}
+# get nodes of the tree
+nodes <- ts_nodes(t_phylo)$node_id
+ts_table(ts_tiny, "nodes") %>% filter(node_id %in% nodes)
+ts_table(ts_tiny, "edges") %>%
+  filter(parent %in% nodes | child %in% nodes,
+         left == t_tskit$interval$left)
+```
+:::
+
+::::
 
 ## Let's get back to the model we defined earlier
 
@@ -1710,6 +1802,7 @@ source("solutions/exercise_5.R")
 ```{r}
 #| echo: false
 source("solutions/exercise_3.R")
+set.seed(123)
 ts__ <- ts_simplify(ts, simplify_to = ts_samples(ts) %>% sample_n(100) %>% pull(name))
 ts_draw(ts_tree(ts__, 1), labels = TRUE)
 ```
@@ -1722,29 +1815,33 @@ ts_draw(ts_tree(ts__, 1), labels = TRUE)
 ```{r}
 ts_small <- ts_simplify(
   ts,
-  simplify_to = c("CH_1", "AFR_1", "AFR_2", "AFR_3",
-                  "ALT_1", "VI_1", "EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5")
+  simplify_to = c(
+    "CH_1",
+    "AFR_1", "AFR_2", "AFR_3",
+    "ALT_1", "VI_1",
+    "EUR_1", "EUR_2", "EUR_3", "EUR_4", "EUR_5"
+  )
 )
 ```
 
-<!-- ```{r} -->
-<!-- library(ggtree) -->
-<!-- pdf("trees.pdf") -->
-<!-- for (i in seq_len(ts_small$num_trees)) { -->
-<!--   tree <- ts_phylo(ts_small, i, quiet = TRUE) -->
-<!-- nodes <- ts_nodes(tree) %>% -->
-<!--   as_tibble %>%  -->
-<!--   dplyr::select(node = phylo_id, pop) -->
+```{r}
+library(ggtree)
+pdf("trees.pdf")
+for (i in seq_len(ts_small$num_trees)) {
+  tree <- ts_phylo(ts_small, i, quiet = TRUE)
+nodes <- ts_nodes(tree) %>%
+  as_tibble %>%
+  dplyr::select(node = phylo_id, pop)
 
-<!-- p_tree <- ggtree(tree) %<+% nodes + -->
-<!--   geom_tiplab(aes(color = pop, fill = pop)) + -->
-<!--   guides(color = "none") + -->
-<!--   ggtitle(i) + -->
-<!--   scale_x_continuous(limits = c(-7e6, 900e3)) -->
-<!-- print(revts(p_tree)) -->
-<!-- } -->
-<!-- dev.off() -->
-<!-- ``` -->
+p_tree <- ggtree(tree) %<+% nodes +
+  geom_tiplab(aes(color = pop, fill = pop)) +
+  guides(color = "none") +
+  ggtitle(i) +
+  scale_x_continuous(limits = c(-7e6, 900e3))
+print(revts(p_tree))
+}
+dev.off()
+```
 
 
 <br>
@@ -1804,8 +1901,41 @@ revts(p_tree)
 ```
 
 ::: fragment
-<center>**Introgression!**</center>
+<center>**Introgression?**</center>
 :::
+
+
+
+
+## Extracting a tree #903
+
+```{r}
+tree <- ts_phylo(ts_small, 903, quiet = TRUE)
+```
+
+```{r}
+#| code-fold: true
+#| fig-align: center
+# this needs another R package
+# simply using the ape package and running `plot(tree)` will also work
+library(ggtree)
+
+nodes <- ts_nodes(tree) %>%
+  as_tibble %>%
+  dplyr::select(node = phylo_id, pop)
+
+p_tree <- ggtree(tree) %<+% nodes +
+  geom_tiplab(aes(color = pop, fill = pop)) +
+  guides(color = "none") +
+  scale_x_continuous(limits = c(-7e6, 900e3)) +
+  geom_vline(xintercept = -700e3, linetype = 2, color = "red")
+revts(p_tree)
+```
+
+::: fragment
+<center>**Introgression?**</center>
+:::
+
 
 
 
