@@ -295,7 +295,7 @@ ggplot() +
 :::
 :::
 
-# Bonus exercise
+# Bonus exercise #1
 
 If you're bored later, try adding selection to this model!
 
@@ -1809,7 +1809,7 @@ revts(p_tree)
 
 
 
-# Bonus exercise #1
+# Bonus exercise #2
 
 ## Try to implement something relevant for your own work
 
@@ -1820,7 +1820,7 @@ revts(p_tree)
 
 
 
-# Bonus exercise #2
+# Bonus exercise #3
 
 ## Try to implement your own D-statistic
 
@@ -1832,3 +1832,4 @@ This function returns a simple R data frame:
 - each row for a site
 - each cell giving the number of derived alleles in that individual at that site
 
+Use the genotype table to compute your own ABBA/BABA statistic on the Neanderthal model data and check if you can recover the same signal as you get from `ts_f4()`.
