@@ -3,7 +3,7 @@ title: "Simulations in population genetics"
 author: " [PopGen 2022](http://www.popgen.dk/popgen22/) --- Martin Petr (mp@bodkan.net)"
 format:
   revealjs:
-    eval: false
+    # eval: false
     echo: true
     code-line-numbers: false
     fig-align: center
@@ -922,12 +922,7 @@ A tree (sequence) can be represented by tables of:
 
 ## Tree-sequence tables in practice
 
-:::: columns
-
-::: {.column="50%"}
-```{r}
-ts
-```
+:::: {.columns}
 
 ```{r}
 #| echo: false
@@ -939,17 +934,22 @@ t_phylo <- ts_phylo(ts_tiny, 1, quiet = TRUE)
 t_tskit <- ts_tree(ts_tiny, 1)
 
 # plot the phylo tree with ape
-library(ape)
-plot(t); nodelabels(t$node.label)
+library(ggtree)
+nodes <- ts_nodes(t_phylo) %>% as_tibble %>% dplyr::select(node = phylo_id, pop, node_id)
+ggtree(t_phylo) %<+% nodes +
+  geom_label(aes(label = node_id)) + 
+  guides(color = "none")
 ```
 
 ::: {.column width="50%"}
 ```{r}
-# get nodes of the tree
-nodes <- ts_nodes(t_phylo)$node_id
-ts_table(ts_tiny, "nodes") %>% filter(node_id %in% nodes)
+#| code-fold: true
+node_ids <- ts_nodes(t_phylo)$node_id
+
+ts_table(ts_tiny, "nodes") %>% filter(node_id %in% node_ids)
+
 ts_table(ts_tiny, "edges") %>%
-  filter(parent %in% nodes | child %in% nodes,
+  filter(parent %in% node_ids | child %in% node_ids,
          left == t_tskit$interval$left)
 ```
 :::
