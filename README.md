@@ -10,6 +10,14 @@ This page summarizes steps needed to set up your machine for the lecture and exe
 -   [RStudio](https://www.rstudio.com/products/rstudio/download/) highly recommended
 -   macOS or Linux (but Windows should work too! see the bottom of this page)
 
+## Update 2022-08-24
+
+The course has a fancy cloud-based RStudio session which you can run in your browser. I recommend using that because that way all of us use the same dependencies and the same operating system.
+
+-   **On-site participants**: [http://ricco.popgen.dk:3838](http://ricco.popgen.dk:3838/auth-sign-in)
+
+-   **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787/)
+
 ## Installation instructions
 
 ### *slendr* simulation package
