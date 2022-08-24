@@ -1,6 +1,6 @@
-# Simulation lecture for PopGen 2022
+# Simulation lecture for [PopGen 2022](http://www.popgen.dk/popgen22/)
 
-You can find the slides [here](https://bodkan.quarto.pub/simulations-in-population-genetics/).
+You can find the slides [here](https://bodkan.quarto.pub/popgen2022-simulations-in-population-genetics/).
 
 This page summarizes steps needed to set up your machine for the lecture and exercises. After you're done installing everything, make sure to run a small testing simulation (code below) to know that everything works as needed.
 
