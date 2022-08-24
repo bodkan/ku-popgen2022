@@ -4,15 +4,7 @@ You can find the slides [here](https://bodkan.quarto.pub/popgen2022-simulations-
 
 This page summarizes steps needed to set up your machine for the lecture and exercises. After you're done installing everything, make sure to run a small testing simulation (code below) to know that everything works as needed.
 
-## Update 2022-08-24
-
-The course has a fancy cloud-based RStudio session which you can run in your browser. I recommend using that because that way all of us use the same dependencies and the same operating system.
-
--   **On-site participants**: [http://ricco.popgen.dk:3838](http://ricco.popgen.dk:3838/auth-sign-in)
-
--   **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787/)
-
-### Getting the code, examples, solutions and data
+## Getting the code, examples, solutions and data
 
 In your terminal (under "Terminal" tab in your RStudio session) run:
 
@@ -21,7 +13,17 @@ In your terminal (under "Terminal" tab in your RStudio session) run:
 
 ------------------------------------------------------------------------
 
-## Installation instructions
+# Installation instructions
+
+## Cloud-based RStudio session (updated on 2022-08-24)
+
+The course has a fancy cloud-based RStudio session which you can run in your browser. **If you can't run the installation instructions below on your own machine use the browser-based RStudio.** Otherwise I strongly recommend using your own laptop because it might be much faster.
+
+-   **On-site participants**: [http://ricco.popgen.dk:3838](http://ricco.popgen.dk:3838/auth-sign-in)
+
+-   **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787/)
+
+## Setting up your local machine
 
 ### Prerequisites
 
@@ -67,7 +69,7 @@ I recommend you install the following packages:
 
 Note that *tidyverse* is a huge collection of packages so the installation might take a bit of time.
 
-## Testing the setup
+# Testing the setup
 
 Copy the following script to your R session after you successfully installed your R dependencies as described above.
 
