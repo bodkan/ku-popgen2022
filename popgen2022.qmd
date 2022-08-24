@@ -426,7 +426,7 @@ They are both extremely powerful...
 
 ##
 
-:::: {.columns}
+:::: {.columns}   
 
 ::: {.column width="60%"}
 

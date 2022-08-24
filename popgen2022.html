@@ -778,7 +778,7 @@ Let’s do “real” simulations!
 <div class="fragment">
 <p><br></p>
 <center>
-<strong>We will learn simulation concepts using <a href="http://www.slendr.net"><em>slendr</em></a>, a convenient R interface to both SLiM and msprime.</strong>
+<strong>We will learn simulation concepts using <a href="http://www.slendr.net"><em>slendr</em></a>,<br>a convenient R interface to both SLiM and msprime.</strong>
 </center>
 </div>
 </section></section>
@@ -1288,7 +1288,7 @@ population history overview:
 <pre><code>╔═══════════════════════════╗
 ║TreeSequence               ║
 ╠═══════════════╤═══════════╣
-║Trees          │     141334║
+║Trees          │     141341║
 ╟───────────────┼───────────╢
 ║Sequence Length│  100000000║
 ╟───────────────┼───────────╢
@@ -1301,7 +1301,7 @@ population history overview:
 ╔═══════════╤══════╤═════════╤════════════╗
 ║Table      │Rows  │Size     │Has Metadata║
 ╠═══════════╪══════╪═════════╪════════════╣
-║Edges      │569170│ 17.4 MiB│          No║
+║Edges      │569007│ 17.4 MiB│          No║
 ╟───────────┼──────┼─────────┼────────────╢
 ║Individuals│  4700│128.5 KiB│          No║
 ╟───────────┼──────┼─────────┼────────────╢
@@ -1309,7 +1309,7 @@ population history overview:
 ╟───────────┼──────┼─────────┼────────────╢
 ║Mutations  │     0│ 16 Bytes│          No║
 ╟───────────┼──────┼─────────┼────────────╢
-║Nodes      │106580│  2.8 MiB│          No║
+║Nodes      │106620│  2.8 MiB│          No║
 ╟───────────┼──────┼─────────┼────────────╢
 ║Populations│     5│383 Bytes│         Yes║
 ╟───────────┼──────┼─────────┼────────────╢
@@ -1462,7 +1462,7 @@ To analyze tree sequences, we need to refer to “samples”
 <pre><code>╔═══════════════════════════╗
 ║TreeSequence               ║
 ╠═══════════════╤═══════════╣
-║Trees          │     389699║
+║Trees          │     391821║
 ╟───────────────┼───────────╢
 ║Sequence Length│  100000000║
 ╟───────────────┼───────────╢
@@ -1470,12 +1470,12 @@ To analyze tree sequences, we need to refer to “samples”
 ╟───────────────┼───────────╢
 ║Sample Nodes   │      20000║
 ╟───────────────┼───────────╢
-║Total Size     │   65.8 MiB║
+║Total Size     │   66.1 MiB║
 ╚═══════════════╧═══════════╝
 ╔═══════════╤═══════╤═════════╤════════════╗
 ║Table      │Rows   │Size     │Has Metadata║
 ╠═══════════╪═══════╪═════════╪════════════╣
-║Edges      │1517216│ 46.3 MiB│          No║
+║Edges      │1524436│ 46.5 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Individuals│  10000│273.5 KiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
@@ -1483,7 +1483,7 @@ To analyze tree sequences, we need to refer to “samples”
 ╟───────────┼───────┼─────────┼────────────╢
 ║Mutations  │      0│ 16 Bytes│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Nodes      │ 285922│  7.6 MiB│          No║
+║Nodes      │ 287288│  7.7 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Populations│      1│222 Bytes│         Yes║
 ╟───────────┼───────┼─────────┼────────────╢
@@ -1547,7 +1547,7 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code>╔═══════════════════════════╗
 ║TreeSequence               ║
 ╠═══════════════╤═══════════╣
-║Trees          │     390860║
+║Trees          │     391525║
 ╟───────────────┼───────────╢
 ║Sequence Length│  100000000║
 ╟───────────────┼───────────╢
@@ -1555,26 +1555,26 @@ This means we can add mutations<br><em>after</em> the simulation.
 ╟───────────────┼───────────╢
 ║Sample Nodes   │      20000║
 ╟───────────────┼───────────╢
-║Total Size     │   90.8 MiB║
+║Total Size     │   90.9 MiB║
 ╚═══════════════╧═══════════╝
 ╔═══════════╤═══════╤═════════╤════════════╗
 ║Table      │Rows   │Size     │Has Metadata║
 ╠═══════════╪═══════╪═════════╪════════════╣
-║Edges      │1521502│ 46.4 MiB│          No║
+║Edges      │1523687│ 46.5 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Individuals│  10000│273.5 KiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Migrations │      0│  8 Bytes│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Mutations  │ 419734│ 14.8 MiB│          No║
+║Mutations  │ 419787│ 14.8 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Nodes      │ 286611│  7.7 MiB│          No║
+║Nodes      │ 287251│  7.7 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Populations│      1│222 Bytes│         Yes║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Provenances│      2│  2.1 KiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Sites      │ 418855│ 10.0 MiB│          No║
+║Sites      │ 418917│ 10.0 MiB│          No║
 ╚═══════════╧═══════╧═════════╧════════════╝</code></pre>
 </div>
 </div>
@@ -1607,7 +1607,7 @@ This means we can add mutations<br><em>after</em> the simulation.
 <span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>afs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 40380 19809 13063  9861  7884  6690  5525  4979  4350  4185</code></pre>
+<pre><code> [1] 41639 20177 13315 10451  7831  6801  5529  4961  4433  3758</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:2%;">
@@ -1795,11 +1795,11 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 6 × 2
   set    diversity
   &lt;chr&gt;      &lt;dbl&gt;
-1 o     0.00000380
-2 c     0.0000199 
-3 a     0.0000538 
-4 b     0.0000686 
-5 x2    0.0000725 
+1 o     0.00000374
+2 c     0.0000210 
+3 a     0.0000542 
+4 b     0.0000677 
+5 x2    0.0000722 
 6 x1    0.0000763 </code></pre>
 </div>
 </div>
@@ -1878,11 +1878,11 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 5 × 2
   set   diversity
   &lt;chr&gt;     &lt;dbl&gt;
-1 ALT   0.0000199
-2 VI    0.0000365
-3 CH    0.000276 
-4 EUR   0.000365 
-5 AFR   0.000391 </code></pre>
+1 ALT   0.0000202
+2 VI    0.0000362
+3 CH    0.000284 
+4 EUR   0.000383 
+5 AFR   0.000401 </code></pre>
 </div>
 </div>
 </section>
@@ -1903,16 +1903,16 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 10 × 3
    x     y     divergence
    &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
- 1 ALT   VI      0.000101
- 2 AFR   EUR     0.000448
- 3 EUR   VI      0.000850
- 4 ALT   EUR     0.000851
- 5 AFR   VI      0.000865
- 6 AFR   ALT     0.000866
- 7 CH    VI      0.00427 
- 8 CH    EUR     0.00427 
- 9 AFR   CH      0.00427 
-10 ALT   CH      0.00427 </code></pre>
+ 1 ALT   VI      0.000100
+ 2 AFR   EUR     0.000461
+ 3 ALT   EUR     0.000838
+ 4 EUR   VI      0.000838
+ 5 AFR   ALT     0.000861
+ 6 AFR   VI      0.000862
+ 7 ALT   CH      0.00426 
+ 8 AFR   CH      0.00426 
+ 9 CH    EUR     0.00426 
+10 CH    VI      0.00427 </code></pre>
 </div>
 </div>
 </div><div class="column" style="width:60%;">
@@ -1992,9 +1992,9 @@ This means we can add mutations<br><em>after</em> the simulation.
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ts_f4</span>(ts, <span class="st">"x1_1"</span>, <span class="st">"x2_1"</span>, <span class="st">"b_1"</span> , <span class="st">"o_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 5
-  W     X     Y     Z              f4
-  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;
-1 x1_1  x2_1  b_1   o_1   0.000000138</code></pre>
+  W     X     Y     Z        f4
+  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+1 x1_1  x2_1  b_1   o_1       0</code></pre>
 </div>
 </div>
 </div>
@@ -2006,7 +2006,7 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 1 × 5
   W      X      Y     Z             f4
   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
-1 x1_100 x2_100 b_1   o_1   0.00000206</code></pre>
+1 x1_100 x2_100 b_1   o_1   0.00000113</code></pre>
 </div>
 </div>
 </div>

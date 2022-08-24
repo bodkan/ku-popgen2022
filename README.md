@@ -4,12 +4,6 @@ You can find the slides [here](https://bodkan.quarto.pub/popgen2022-simulations-
 
 This page summarizes steps needed to set up your machine for the lecture and exercises. After you're done installing everything, make sure to run a small testing simulation (code below) to know that everything works as needed.
 
-## Prerequisites
-
--   Working [R installation](https://cloud.r-project.org)(at least R 3.6, preferably 4.x)
--   [RStudio](https://www.rstudio.com/products/rstudio/download/) highly recommended
--   macOS or Linux (but Windows should work too! see the bottom of this page)
-
 ## Update 2022-08-24
 
 The course has a fancy cloud-based RStudio session which you can run in your browser. I recommend using that because that way all of us use the same dependencies and the same operating system.
@@ -18,7 +12,22 @@ The course has a fancy cloud-based RStudio session which you can run in your bro
 
 -   **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787/)
 
+### Getting the code, examples, solutions and data
+
+In your terminal (under "Terminal" tab in your RStudio session) run:
+
+    git clone https://github.com/bodkan/popgen2022
+    cd popgen2022
+
+------------------------------------------------------------------------
+
 ## Installation instructions
+
+### Prerequisites
+
+-   Working [R installation](https://cloud.r-project.org)(at least R 3.6, preferably 4.x)
+-   [RStudio](https://www.rstudio.com/products/rstudio/download/) highly recommended
+-   macOS or Linux (but Windows should work too! see the bottom of this page)
 
 ### *slendr* simulation package
 
