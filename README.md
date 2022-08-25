@@ -4,13 +4,13 @@
 
 ### [Here](https://bodkan.quarto.pub/popgen2022-simulations-in-population-genetics-onepage/) is a render of the slides as a single HTML page (easier for quick reading).
 
+------------------------------------------------------------------------
+
 This README summarizes steps needed to set up your machine for the lecture and exercises. After you're done installing everything, make sure to run a small testing simulation (code below) to know that everything works as needed.
 
 ------------------------------------------------------------------------
 
 # Installation instructions
-
-------------------------------------------------------------------------
 
 ## Cloud-based RStudio session (updated on 2022-08-24)
 
@@ -19,8 +19,6 @@ The course has a fancy cloud-based RStudio session which you can run in your bro
 -   **On-site participants**: [http://ricco.popgen.dk:3838](http://ricco.popgen.dk:3838/auth-sign-in)
 
 -   **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787/)
-
-------------------------------------------------------------------------
 
 ## Setting up your local machine
 
