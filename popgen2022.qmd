@@ -1370,10 +1370,18 @@ observed_afs <- ts_afs(ts, list(samples), polarised = TRUE)
 
 Collaborator [Hestu](https://zelda.fandom.com/wiki/Hestu) gave you AFS computed from 10 individuals of a sub-species of the [_bushy-tailed squirrel_](https://www.zeldadungeon.net/wiki/Bushy-Tailed_Squirrel) discovered in the Forest of Spirits in the land of Hyrule:
 
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- dput(as.vector(observed_afs)) -->
+<!-- ``` -->
+
+
 ```{r}
 #| echo: false
-dput(as.vector(observed_afs))
+observed_afs <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218, 
+133, 173, 159, 142, 167, 129, 125, 143)
 ```
+
 
 Fossil evidence is consistent with constant size of the population over 100,000 generations of its history. An Oracle you met in the Temple of Time said that the true squirrel $N_e$ has been between 1000 and 30000.
 
@@ -1647,7 +1655,7 @@ Use `ts_diversity()` to compute diversity in each simulated population (`CH`, `A
 
 Does the result match the expectation given demographic history?
 
-What about pairwise genetic divergence between all populations (`ts_divergence()`)? Do your results recapitulate phylogenetic relationships? How about `ts_f3()` or `ts_fst()`?
+What about divergence between all pairs of populations (`ts_divergence()`)? Do your results recapitulate phylogenetic relationships? How about `ts_f3()` or `ts_fst()`?
 :::
 
 ::: {.column width="40%"}
