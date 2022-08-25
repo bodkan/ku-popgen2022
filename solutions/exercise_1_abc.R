@@ -1,3 +1,7 @@
+# THIS IS A BONUS ADVANCED SOLUTION
+# I will walk through it in the lecture myself (do not expect students
+# to solve this on their own)
+
 library(slendr)
 library(tidyverse)
 library(parallel)

@@ -1,6 +1,8 @@
 library(slendr)
 library(tidyverse)
 
+TRUE_NE <- 6543
+
 simulate_afs <- function(Ne) {
   model_path <- tempfile()
   on.exit(unlink(model_path, recursive = TRUE, force = TRUE))
