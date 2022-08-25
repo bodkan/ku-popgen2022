@@ -4,13 +4,6 @@ You can find the slides [here](https://bodkan.quarto.pub/popgen2022-simulations-
 
 This page summarizes steps needed to set up your machine for the lecture and exercises. After you're done installing everything, make sure to run a small testing simulation (code below) to know that everything works as needed.
 
-## Getting the code, examples, solutions and data
-
-In your terminal (under "Terminal" tab in your RStudio session) run:
-
-    git clone https://github.com/bodkan/popgen2022
-    cd popgen2022
-
 ------------------------------------------------------------------------
 
 # Installation instructions
