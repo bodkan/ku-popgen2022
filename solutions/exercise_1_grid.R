@@ -24,7 +24,12 @@ simulate_afs <- function(Ne) {
 
 Ne_grid <- seq(from = 1000, to = 30000, by = 1000)
 
-afs_grid <- lapply(Ne_grid, simulate_afs)
+if (file.exists("solutions/data/exercise_1_grid.rds")) {
+  afs_grid <- readRDS("solutions/data/exercise_1_grid.rds")
+} else {
+  afs_grid <- lapply(Ne_grid, simulate_afs)
+  saveRDS(afs_grid, "solutions/data/exercise_1_grid.rds")
+}
 
 afs_observed <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218,
                   133, 173, 159, 142, 167, 129, 125, 143)
