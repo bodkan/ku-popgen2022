@@ -75,21 +75,23 @@ Copy the following script to your R session after you successfully installed you
 
     library(slendr)
 
-    o <- population("outgroup", time = 1, N = 10)
-    b <- population("b", parent = o, time = 500, N = 10)
-    c <- population("c", parent = b, time = 1000, N = 10)
-    x1 <- population("x1", parent = c, time = 2000, N = 10000)
-    x2 <- population("x2", parent = c, time = 2000, N = 10000)
-    a <- population("a", parent = b, time = 1500, N = 10)
+    o <- population("outgroup", time = 1, N = 100)
+    b <- population("b", parent = o, time = 500, N = 100)
+    c <- population("c", parent = b, time = 1000, N = 100)
+    x1 <- population("x1", parent = c, time = 2000, N = 100)
+    x2 <- population("x2", parent = c, time = 2000, N = 100)
+    a <- population("a", parent = b, time = 1500, N = 100)
 
     gf <- gene_flow(from = b, to = x1, start = 2100, end = 2150, rate = 0.1)
 
     model <- compile_model(
       populations = list(a, b, x1, x2, c, o), gene_flow = gf,
-      generation_time = 1, sim_length = 2200
+      generation_time = 1, simulation_length = 2200
     )
 
-    ts <- msprime(model, sequence_length = 250e6, recombination_rate = 1e-8)
+    ts <- msprime(model, sequence_length = 10e6, recombination_rate = 1e-8)
+
+    ts
 
 If this runs without error and you get a small summary table from the `ts` object, you're all set!
 
