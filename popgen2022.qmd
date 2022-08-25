@@ -2,12 +2,17 @@
 title: "Simulations in population genetics"
 author: " [PopGen 2022](http://www.popgen.dk/popgen22/) --- Martin Petr (mp@bodkan.net)"
 format:
-  revealjs:
+  # revealjs:
+  #   # eval: false
+  #   echo: true
+  #   code-line-numbers: false
+  #   fig-align: center
+  #   slide-number: true
+  html:
     # eval: false
     echo: true
     code-line-numbers: false
     fig-align: center
-    slide-number: true
 ---
 
 #
@@ -119,11 +124,9 @@ Chromosomes recombine at a certain _recombination rate_.
 
 Let's make the algorithm even more minimal by focusing on the evolution of a single mutation across time (i.e. no mutation process, no recombination).
 
-##
+## Some basic setup
 
-<br>
-
-Some basic setup:
+If you want to try the following couple of examples yourself, you will need to paste the following lines into your R session (either R in the terminal, or better an RStudio session):
 
 ```{r, setup}
 library(tidyverse)
@@ -300,67 +303,7 @@ ggplot() +
 :::
 :::
 
-# Bonus exercise #1
-
-If you're bored later, try adding selection to this model!
-
-In each generation, weight the frequencies based on fitness of each of the tree genotypes.
-
-If you need a hint, take a look [here](https://github.com/bodkan/notebooks/blob/master/MLE_single_locus_selection.ipynb).
-
 # Why bother?
-
-<!-- ## Let's add selection! -->
-
-<!-- Write `simulate_selection(s, N, p_start, generations)`, where `s` is the selection coefficient. -->
-
-<!-- ```{r} -->
-<!-- #| eval: false -->
-<!-- simulate_selection <- function(s, N, p_start, generations) { -->
-<!--   # we assume additivity -->
-<!--   h <- 1/2 -->
-
-<!--   # initialize an (empty) trajectory vector of allele frequencies -->
-<!--   p_traj<- rep(NA, generations) -->
-<!--   p_traj[1] <- p_start -->
-
-<!--   # in each generation... -->
-<!--   for (gen_i in 2:generations) { -->
-<!--     p <- p_traj[gen_i - 1] # get the current frequency -->
-
-<!--     fitnesses <- c( -->
-<!--       p ^ 2           * (1 + s), -->
-<!--       2 * p * (1 - p) * (1 + h * s), -->
-<!--       (1 - p) ^ 2     * 1 -->
-<!--     ) -->
-<!--     p_next <- (fitnesses[1] + h * fitnesses[2]) / mean(fitnesses) -->
-
-<!--     if (p_next >= 1) p_next <- 1 -->
-
-<!--     # ... calculate the allele frequency in the next generation ... -->
-<!--     p_next <- rbinom(1, N, p_next) / N -->
-
-<!--     # ... and save it to the trajectory vector -->
-<!--     p_traj[gen_i] <- p_next -->
-<!--   } -->
-
-<!--   p_traj -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- deterministic_selection <- function(t, p_start, s) { -->
-<!--   p_start * exp(s * t / 2) / (p_start * exp(s * t / 2) + (1 - p_start)) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- deterministic_traj <- sapply(1:1000, deterministic_selection, p_start = 0.01, s = 0.1) -->
-
-<!-- plot(deterministic_traj, type = "l") -->
-<!-- ``` -->
-
-<!-- (Let's assume additive selection: $h = \frac{1}{2}$). -->
 
 ##
 
@@ -385,6 +328,17 @@ If you need a hint, take a look [here](https://github.com/bodkan/notebooks/blob/
 :::
 
 ::::
+
+
+
+# Bonus exercise #1
+
+If you're bored later, **try adding selection** to this model!
+
+In each generation, weight the frequencies based on fitness of each of the tree genotypes.
+
+If you need a hint, take a look [here](https://github.com/bodkan/notebooks/blob/master/MLE_single_locus_selection.ipynb).
+
 
 
 
@@ -627,14 +581,14 @@ setup_env()
 
 <center>**(ignore the message about missing SLiM)**</center>
 
-<br> **To check that everything is setup correctly, run:**
 
-```{r}
-#| output: false
-check_env()
-```
+## Workaround for an RStudio bug
 
+RStudio sometimes interferes with Python setup that we need for simulation.
 
+To avoid the problem, go to `Tools` -> `Global Options` and make sure you have the following setting:
+
+<center>![](images/rstudio_setting.png)</center>
 
 #
 
@@ -1356,6 +1310,17 @@ If you feel the servers are slow, you can also use your own laptop (setup instru
 
 
 
+
+## Workaround for an RStudio bug
+
+RStudio sometimes interferes with Python setup that we need for simulation.
+
+To avoid the problem, go to `Tools` -> `Global Options` and make sure you have the following setting:
+
+<center>![](images/rstudio_setting.png)</center>
+
+
+
 ## Exercise #1
 
 ```{r}
@@ -1384,7 +1349,6 @@ Collaborator [Hestu](https://zelda.fandom.com/wiki/Hestu) gave you AFS computed 
 
 
 ```{r}
-#| echo: false
 observed_afs <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218, 
 133, 173, 159, 142, 167, 129, 125, 143)
 ```
@@ -1407,6 +1371,13 @@ Use _slendr_ to simulate history of this species. Use this to guess the likely v
     - ii ) Simulate AFS across a grid of $N_e$ values and find the closest matching one (maybe use [mean-squared error](https://en.wikipedia.org/wiki/Mean_squared_error)?)
 
     - iii ) Run a mini-Approximate Bayesian Computation, using the Oracle's range of [10000, 30000] as a uniform prior.
+
+
+## Exercise #1 -- eye-balling solution
+
+<br><br>
+
+<center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_1_simple.R)</h3></center>
 
 
 ## Exercise #1 -- simulations on a grid
@@ -1932,25 +1903,24 @@ ts_small <- ts_simplify(
 )
 ```
 
-# ```{r}
-# library(ggtree)
-# pdf("trees.pdf")
-# for (i in seq_len(ts_small$num_trees)) {
-#   tree <- ts_phylo(ts_small, i, quiet = TRUE)
-# nodes <- ts_nodes(tree) %>%
-#   as_tibble %>%
-#   dplyr::select(node = phylo_id, pop)
-# 
-# p_tree <- ggtree(tree) %<+% nodes +
-#   geom_tiplab(aes(color = pop, fill = pop)) +
-#   guides(color = "none") +
-#   ggtitle(i) +
-#   scale_x_continuous(limits = c(-7e6, 900e3))
-# print(revts(p_tree))
-# }
-# dev.off()
-# ```
-# 
+<!-- ```{r} -->
+<!-- # library(ggtree) -->
+<!-- # pdf("trees.pdf") -->
+<!-- # for (i in seq_len(ts_small$num_trees)) { -->
+<!-- #   tree <- ts_phylo(ts_small, i, quiet = TRUE) -->
+<!-- # nodes <- ts_nodes(tree) %>% -->
+<!-- #   as_tibble %>% -->
+<!-- #   dplyr::select(node = phylo_id, pop) -->
+<!-- #  -->
+<!-- # p_tree <- ggtree(tree) %<+% nodes + -->
+<!-- #   geom_tiplab(aes(color = pop, fill = pop)) + -->
+<!-- #   guides(color = "none") + -->
+<!-- #   ggtitle(i) + -->
+<!-- #   scale_x_continuous(limits = c(-7e6, 900e3)) -->
+<!-- # print(revts(p_tree)) -->
+<!-- # } -->
+<!-- # dev.off() -->
+<!-- ``` -->
 
 <br>
 
