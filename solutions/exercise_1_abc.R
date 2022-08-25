@@ -27,7 +27,7 @@ simulate_afs <- function(Ne) {
 
 # Compute a single AFS given input Ne sampled from the prior, return the
 # error vs observed AFS together with the Ne
-compute_Ne_error <- function() {
+compute_Ne_error <- function(afs_observed) {
   prior <- seq(1000, 30000, by = 1)
   Ne <- sample(prior, 1)
 
@@ -43,17 +43,20 @@ compute_Ne_error <- function() {
 
 run_abc <- function(n_iterations, afs_observed) {
   # generate a list of all individual ABC runs (pairs Ne-vs-error)
-  abc_runs <- mclapply(1:n_iterations, compute_Ne_error)
+  abc_runs <- mclapply(1:n_iterations, function(i) compute_Ne_error(afs_observed))
   # join all runs into a single data frame and return it
   abc_df <- do.call(rbind, abc_runs)
   abc_df
 }
 
+afs_observed <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218, 
+                  133, 173, 159, 142, 167, 129, 125, 143)
+
 if (file.exists("exercise_1_abc.rds")) {
   abc_results <- readRDS("exercise_1_abc.rds")
 } else {
   abc_results <- run_abc(1000, afs_observed)
-  saveRDS(abc_results, "exercise_1_abc.rds")
+  saveRDS(abc_results, "solutions/data/exercise_1_abc.rds")
 }
 
 
