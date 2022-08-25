@@ -29,6 +29,7 @@ format:
 1.   Exploring expected behavior of statistics
 2.   Fitting model parameters (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
 3.   Ground truth for method development
+4.   Learning concepts in population genetics
 
 ## Exploring expected behavior of statistics
 
@@ -54,6 +55,9 @@ Image from [Wikipedia on ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian
 ::: aside
 Image from [Schiffels and Durbin (2014)](https://www.nature.com/articles/ng.3015)
 :::
+
+
+## Learning concepts in population genetics
 
 
 
@@ -113,7 +117,7 @@ Chromosomes recombine at a certain _recombination rate_.
 
 <br>
 
-Let's make the algorithm even more minimal by focusing on an evolution of a single mutation across time.
+Let's make the algorithm even more minimal by focusing on the evolution of a single mutation across time (i.e. no mutation process, no recombination).
 
 ##
 
@@ -672,6 +676,24 @@ pop1
 ```
 
 
+## For R experts -- what are the population objects?
+
+```{r}
+class(pop1)
+```
+
+. . .
+
+```{r}
+names(pop1)
+```
+
+. . .
+
+```{r}
+str(pop1)
+```
+
 
 
 ## Programming population splits
@@ -748,7 +770,7 @@ pop2 <-
 ## More complex full model
 
 ```{r}
-#| code-line-numbers: "|15-20"
+#| code-line-numbers: "|16|17|18|19|20|15"
 pop1 <- population("pop1", N = 1000, time = 1)
 
 pop2 <-
@@ -796,6 +818,24 @@ model <- compile_model(
 <br>
 
 <center>**Compilation takes a list of model components, performs internal consistency checks, returns a single model object.**</center>
+
+
+## Model summary
+
+Typing the compiled model prints a brief summary:
+
+```{r}
+model
+```
+
+. . .
+
+The model is also saved to disk! (The location can be specified via `path = ` argument to `compile_model()`):
+
+```{r}
+dir(model$path)
+```
+
 
 
 
@@ -867,6 +907,7 @@ ts <- msprime(model, sequence_length = 100e6, recombination_rate = 1e-8)
 
 ## How does it work?
 
+
 This simulates 20 $\times$ 10000 chromosomes of 100 Mb.
 
 In less than 30 seconds.
@@ -890,7 +931,7 @@ ts
 
 <center>![](images/tables.jpeg)<center>
 
-## Tree-sequence tables ([link](https://tskit.dev/tutorials/tables_and_editing.html))
+## Tree-sequence tables
 
 :::: row
 ::: columns
@@ -920,12 +961,19 @@ A tree (sequence) can be represented by tables of:
 <center><h2>**A set of such tables is a tree sequence.**</h2></center>
 :::
 
+::: aside
+Documentation on [tables](https://tskit.dev/tutorials/tables_and_editing.html) from the tskit project.
+:::
+
+
 ## Tree-sequence tables in practice
 
 :::: {.columns}
 
+::: {.column width="40%"}
 ```{r}
 #| echo: false
+#| fig-height: 10
 set.seed(123)
 # make a tiny example simplified tree sequence
 ts_tiny <- ts_samples(ts) %>% sample_n(5) %>% pull(name) %>% ts_simplify(ts, simplify_to = .)
@@ -940,17 +988,13 @@ ggtree(t_phylo) %<+% nodes +
   geom_label(aes(label = node_id)) + 
   guides(color = "none")
 ```
+:::
 
-::: {.column width="50%"}
+::: {.column width="60%"}
 ```{r}
 #| code-fold: true
-node_ids <- ts_nodes(t_phylo)$node_id
-
-ts_table(ts_tiny, "nodes") %>% filter(node_id %in% node_ids)
-
-ts_table(ts_tiny, "edges") %>%
-  filter(parent %in% node_ids | child %in% node_ids,
-         left == t_tskit$interval$left)
+ts_nodes(t_phylo) %>% as_tibble()
+ts_edges(t_phylo) %>% as_tibble()
 ```
 :::
 
@@ -991,6 +1035,23 @@ If we type `ts` into an R console, we get...
 ts
 ```
 
+
+
+## Saving a tree-sequence permanently
+
+We can either specify an output file:
+
+```{r}
+#| eval: false
+ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, output = "<path>")
+```
+
+Alternatively, we can always save an already created tree-sequence object:
+
+```{r}
+#| eval: false
+ts_save(ts, file = "<path>")
+```
 
 
 
@@ -1096,11 +1157,14 @@ samples <-
 # compute allele frequency
 # spectrum from the given set
 # of individuals
-afs <- ts_afs(
+afs1 <- ts_afs(
   ts, list(samples),
   mode = "branch",
-  polarised = TRUE
+  polarised = TRUE,
+  span_normalise = TRUE
 )
+
+afs1
 ```
 :::
 
@@ -1112,7 +1176,7 @@ afs <- ts_afs(
 ::: fragment
 ```{r}
 #| fig-height: 10
-plot(afs, type = "b",
+plot(afs1, type = "b",
      xlab = "allele count bin",
      ylab = "frequency")
 ```
@@ -1228,12 +1292,12 @@ samples <-
 # compute allele frequency
 # spectrum from the given set
 # of individuals
-afs <- ts_afs(
+afs2 <- ts_afs(
   ts, list(samples),
   polarised = TRUE
 )
 
-afs
+afs2
 ```
 :::
 
@@ -1245,9 +1309,12 @@ afs
 ::: fragment
 ```{r}
 #| fig-height: 10
-plot(afs, type = "b",
+plot(afs2, type = "b",
      xlab = "allele count bin",
      ylab = "frequency")
+lines(afs1, type = "b", col = "red")
+legend("topright", legend = c("mutation-based AFS", "theoretical branch-based AFS"),
+       fill = c("black", "red"))
 ```
 :::
 :::
@@ -1259,7 +1326,7 @@ plot(afs, type = "b",
 
 ## What we have learned so far
 
-1. creating populations -- [`populations()`](https://www.slendr.net/reference/population.html)
+1. creating populations -- [`population()`](https://www.slendr.net/reference/population.html)
 2. compiling models -- [`compile_model()`](https://www.slendr.net/reference/compile_model.html)
 3. simulating tree sequences -- [`msprime()`](https://www.slendr.net/reference/msprime.html)
 4. extracting samples -- [`ts_samples()`](https://www.slendr.net/reference/ts_samples.html)
@@ -1294,7 +1361,7 @@ samples <- ts_samples(ts) %>% sample_n(10) %>% pull(name)
 observed_afs <- ts_afs(ts, list(samples), polarised = TRUE)
 ```
 
-Collaborator Hestu gave you AFS computed from 20 individuals of a sub-species of the [_bushy-tailed squirrel_](https://www.zeldadungeon.net/wiki/Bushy-Tailed_Squirrel) discovered in the Forest of Spirits in the land of Hyrule:
+Collaborator [Hestu](https://zelda.fandom.com/wiki/Hestu) gave you AFS computed from 10 individuals of a sub-species of the [_bushy-tailed squirrel_](https://www.zeldadungeon.net/wiki/Bushy-Tailed_Squirrel) discovered in the Forest of Spirits in the land of Hyrule:
 
 ```{r}
 #| echo: false
@@ -1322,9 +1389,13 @@ Use _slendr_ to simulate history of this species. Use this to guess the likely v
 
 ## Exercise #1 -- simulations on a grid
 
+<br><br>
+
 <center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_1_grid.R)</h3></center>
 
 ## Exercise #1 -- ABC inference
+
+<br><br>
 
 <center><h3>[solution](https://github.com/bodkan/popgen-2022/blob/main/solutions/exercise_1_abc.R)</h3></center>
 
@@ -1335,7 +1406,7 @@ Use _slendr_ to simulate history of this species. Use this to guess the likely v
 ::: {.column width="60%"}
 Tectonic shifts caused by activated Sheikah towers caused speciation of the squirrels. Unfortunately, their future is clouded by the shadow cast over Hyrule by Calamity Ganon.
 
-Can you help the Oracle predict the future shape of the AFS of the squirrels, assuming starting $N_e$ = 6543? Species #1 will remain constant, species #2 will expand 3X, species #3 will get 3X smaller.
+Help the Oracle predict the future shape of the AFS of the squirrels after 10000 generations, assuming starting $N_e$ = 6543? Species #1 will remain constant, species #2 will expand 3X, species #3 will get 3X smaller.
 
 :::
 
@@ -1410,6 +1481,20 @@ gf <- list(
 
 <br>
 <center>**`gene_flow()` checks admixture events for consistency**</center>
+
+
+
+## Behind the scenes
+
+<br>
+
+The output of `gene_flow()` is nothing but a data frame:
+
+```{r}
+gf
+```
+
+However, the function does lots of consistency checks behind the scenes, so its better to always use it.
 
 
 
@@ -1491,6 +1576,7 @@ ts_diversity(ts, samples) %>%
 
 ::::
 
+<center>**Basically every `ts_<...>()` function of _slendr_ accepts a tree-sequence object as its first argument.**</center>
 
 
 # Exercise #3
@@ -1552,9 +1638,9 @@ Then simulate 100Mb sequence with `msprime()`, using recombination rate 1e-8 per
 ::: {.column width="60%"}
 Use `ts_diversity()` to compute diversity in each simulated population (`CH`, `AFR`, ...).
 
-Does the result correspond to what you would expect based on the demographic history?
+Does the result match the expectation given demographic history?
 
-What about pairwise genetic divergence between all populations (`ts_divergence()`)? Do your results recapitulate phylogenetic relationships?
+What about pairwise genetic divergence between all populations (`ts_divergence()`)? Do your results recapitulate phylogenetic relationships? How about `ts_f3()` or `ts_fst()`?
 :::
 
 ::: {.column width="40%"}
@@ -1824,25 +1910,25 @@ ts_small <- ts_simplify(
 )
 ```
 
-```{r}
-library(ggtree)
-pdf("trees.pdf")
-for (i in seq_len(ts_small$num_trees)) {
-  tree <- ts_phylo(ts_small, i, quiet = TRUE)
-nodes <- ts_nodes(tree) %>%
-  as_tibble %>%
-  dplyr::select(node = phylo_id, pop)
-
-p_tree <- ggtree(tree) %<+% nodes +
-  geom_tiplab(aes(color = pop, fill = pop)) +
-  guides(color = "none") +
-  ggtitle(i) +
-  scale_x_continuous(limits = c(-7e6, 900e3))
-print(revts(p_tree))
-}
-dev.off()
-```
-
+# ```{r}
+# library(ggtree)
+# pdf("trees.pdf")
+# for (i in seq_len(ts_small$num_trees)) {
+#   tree <- ts_phylo(ts_small, i, quiet = TRUE)
+# nodes <- ts_nodes(tree) %>%
+#   as_tibble %>%
+#   dplyr::select(node = phylo_id, pop)
+# 
+# p_tree <- ggtree(tree) %<+% nodes +
+#   geom_tiplab(aes(color = pop, fill = pop)) +
+#   guides(color = "none") +
+#   ggtitle(i) +
+#   scale_x_continuous(limits = c(-7e6, 900e3))
+# print(revts(p_tree))
+# }
+# dev.off()
+# ```
+# 
 
 <br>
 
@@ -1932,9 +2018,7 @@ p_tree <- ggtree(tree) %<+% nodes +
 revts(p_tree)
 ```
 
-::: fragment
 <center>**Introgression?**</center>
-:::
 
 
 
