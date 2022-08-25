@@ -35,7 +35,7 @@ afs_observed <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218,
                   133, 173, 159, 142, 167, 129, 125, 143)
 
 # Plot the observed AFS and overlay the simulated AFS vectors on top of it
-plot(afs_observed, type = "b", col = "red", lwd = 3)
+plot(afs_observed, type = "b", col = "red", lwd = 3, xlab = "allele count bin", ylab = "count")
 for (i in seq_along(Ne_grid)) {
   lines(afs_grid[[i]], lwd = 0.5)
 }
@@ -54,7 +54,7 @@ legend("topright", legend = c(paste("inferred Ne =", Ne_grid[which.min(errors)])
        col = c("green", "purple"), lty = 2)
 
 # Plot the AFS again, highlighting the most likely spectrum
-plot(afs_observed, type = "b", col = "red", lwd = 1)
+plot(afs_observed, type = "b", col = "red", lwd = 1, xlab = "allele count bin", ylab = "count")
 for (i in seq_along(Ne_grid)) {
   color <- if (i == which.min(errors)) "green" else "gray"
   width <- if (i == which.min(errors)) 2 else 0.5
