@@ -21,7 +21,7 @@ model <- compile_model(
 )
 
 ts <-
-  msprime(model, sequence_length = 10e6, recombination_rate = 1e-8) %>%
+  msprime(model, sequence_length = 100e6, recombination_rate = 1e-8) %>%
   ts_mutate(mutation_rate = 1e-8)
 
 samples <- ts_samples(ts) %>%
@@ -41,3 +41,11 @@ lines(afs1, type = "l", cex = 0.2)
 lines(afs3, type = "l", col = "green", cex = 0.2)
 legend("topright", legend = c("constant", "expansion", "contraction"),
        fill = c("black", "blue", "green"))
+
+dir.create("solutions/data", showWarnings = FALSE)
+
+ts_vcf(
+  ts, path = "solutions/data/exercise_2.vcf.gz",
+  chrom = "chr42",
+  individuals = c("s1_1", "s1_2", "s2_1", "s2_2", "s3_1", "s3_2")
+)

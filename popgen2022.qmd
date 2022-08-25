@@ -684,12 +684,14 @@ class(pop1)
 
 . . .
 
+<br>
 ```{r}
 names(pop1)
 ```
 
 . . .
 
+<br>
 ```{r}
 str(pop1)
 ```
@@ -833,6 +835,7 @@ model
 The model is also saved to disk! (The location can be specified via `path = ` argument to `compile_model()`):
 
 ```{r}
+#| echo: false
 dir(model$path)
 ```
 
@@ -931,7 +934,7 @@ ts
 
 <center>![](images/tables.jpeg)<center>
 
-## Tree-sequence tables
+## Tree-sequence tables ([tskit docs](https://tskit.dev/tutorials/tables_and_editing.html) )
 
 :::: row
 ::: columns
@@ -959,10 +962,6 @@ A tree (sequence) can be represented by tables of:
 
 ::: fragment
 <center><h2>**A set of such tables is a tree sequence.**</h2></center>
-:::
-
-::: aside
-Documentation on [tables](https://tskit.dev/tutorials/tables_and_editing.html) from the tskit project.
 :::
 
 
