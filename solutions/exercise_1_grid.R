@@ -28,6 +28,7 @@ if (file.exists("solutions/data/exercise_1_grid.rds")) {
   afs_grid <- readRDS("solutions/data/exercise_1_grid.rds")
 } else {
   afs_grid <- lapply(Ne_grid, simulate_afs)
+  dir.create("solutions/data", showWarnings = TRUE, recursive = TRUE)
   saveRDS(afs_grid, "solutions/data/exercise_1_grid.rds")
 }
 
