@@ -969,10 +969,10 @@ A tree (sequence) can be represented by tables of:
 
 :::: {.columns}
 
-::: {.column width="40%"}
+::: {.column width="30%"}
 ```{r}
 #| echo: false
-#| fig-height: 10
+#| fig-height: 13
 set.seed(123)
 # make a tiny example simplified tree sequence
 ts_tiny <- ts_samples(ts) %>% sample_n(5) %>% pull(name) %>% ts_simplify(ts, simplify_to = .)
@@ -989,11 +989,11 @@ ggtree(t_phylo) %<+% nodes +
 ```
 :::
 
-::: {.column width="60%"}
+::: {.column width="70%"}
 ```{r}
 #| code-fold: true
-ts_nodes(t_phylo) %>% as_tibble()
-ts_edges(t_phylo) %>% as_tibble()
+ts_nodes(t_phylo) %>% as_tibble() %>% head(3)
+ts_edges(t_phylo) %>% as_tibble() %>% head(3)
 ```
 :::
 
@@ -1339,6 +1339,14 @@ legend("topright", legend = c("mutation-based AFS", "theoretical branch-based AF
 
 
 # Exercise #1
+
+Open your RStudio session: 
+
+- http://ricco.popgen.dk:3838
+
+- 
+
+
 
 
 ## Exercise #1
