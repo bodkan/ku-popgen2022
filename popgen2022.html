@@ -1005,20 +1005,20 @@ ts = msprime.sim_ancestry(
 </section>
 <section id="we-will-use-slendr-tidyverse" class="slide level2">
 <h2>We will use <code>slendr</code> &amp; <code>tidyverse</code></h2>
-<p>First run this:</p>
+<p><strong>First run this:</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># table processing/filtering and plotting</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(slendr) <span class="co"># simulation and tree-sequence analysis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><br>If you get a message about missing Python modules, run:</p>
+<p><strong>Then run this (and wait for the Python installation to finish):</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setup_env</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <center>
 <strong>(ignore the message about missing SLiM)</strong>
 </center>
-<p><br> To check that everything is setup correctly, run:</p>
+<p><br> <strong>To check that everything is setup correctly, run:</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_env</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1247,7 +1247,7 @@ time direction: forward
 total running length: 3000 model time units
 model type: non-spatial
 
-configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/RtmpmBJNCJ/filedb602ab83858 </code></pre>
+configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T/RtmpnNxNAB/fileed0c7d35dd73 </code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -1356,7 +1356,7 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 <pre><code>╔═══════════════════════════╗
 ║TreeSequence               ║
 ╠═══════════════╤═══════════╣
-║Trees          │     392277║
+║Trees          │     391820║
 ╟───────────────┼───────────╢
 ║Sequence Length│  100000000║
 ╟───────────────┼───────────╢
@@ -1364,12 +1364,12 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 ╟───────────────┼───────────╢
 ║Sample Nodes   │      20000║
 ╟───────────────┼───────────╢
-║Total Size     │   66.3 MiB║
+║Total Size     │   66.1 MiB║
 ╚═══════════════╧═══════════╝
 ╔═══════════╤═══════╤═════════╤════════════╗
 ║Table      │Rows   │Size     │Has Metadata║
 ╠═══════════╪═══════╪═════════╪════════════╣
-║Edges      │1528255│ 46.6 MiB│          No║
+║Edges      │1524047│ 46.5 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Individuals│  10000│273.5 KiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
@@ -1377,7 +1377,7 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 ╟───────────┼───────┼─────────┼────────────╢
 ║Mutations  │      0│ 16 Bytes│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Nodes      │ 287823│  7.7 MiB│          No║
+║Nodes      │ 287124│  7.7 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Populations│      1│222 Bytes│         Yes║
 ╟───────────┼───────┼─────────┼────────────╢
@@ -1444,9 +1444,9 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 <pre><code># A tibble: 3 × 9
   name  pop   node_id phylo_id   time time_tskit sampled ind_id pop_id
   &lt;chr&gt; &lt;fct&gt;   &lt;int&gt;    &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;    &lt;dbl&gt;  &lt;int&gt;
-1 &lt;NA&gt;  pop     50394       11 55790.         NA FALSE       NA      0
-2 &lt;NA&gt;  pop     32757       18 20563.         NA FALSE       NA      0
-3 &lt;NA&gt;  pop     21219       17 10489.         NA FALSE       NA      0</code></pre>
+1 &lt;NA&gt;  pop     39287       11 29127.         NA FALSE       NA      0
+2 &lt;NA&gt;  pop     16209       18  7319.         NA FALSE       NA      0
+3 &lt;NA&gt;  pop     13679       17  6053.         NA FALSE       NA      0</code></pre>
 </div>
 <details>
 <summary>Code</summary>
@@ -1456,9 +1456,9 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 <pre><code># A tibble: 3 × 8
   parent_phylo_id child_phylo_id child…¹ paren…² child…³ paren…⁴ child…⁵ paren…⁶
             &lt;dbl&gt;          &lt;dbl&gt;   &lt;int&gt;   &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;  
-1              11             18   32757   50394  20563.  55790. pop     pop    
-2              11             17   21219   50394  10489.  55790. pop     pop    
-3              17             16   17795   21219   8315.  10489. pop     pop    
+1              11             18   16209   39287   7319.  29127. pop     pop    
+2              18             17   13679   16209   6053.   7319. pop     pop    
+3              11             16    6707   39287   3020.  29127. pop     pop    
 # … with abbreviated variable names ¹​child_node_id, ²​parent_node_id,
 #   ³​child_time, ⁴​parent_time, ⁵​child_pop, ⁶​parent_pop</code></pre>
 </div>
@@ -1494,7 +1494,7 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 <pre><code>╔═══════════════════════════╗
 ║TreeSequence               ║
 ╠═══════════════╤═══════════╣
-║Trees          │     140516║
+║Trees          │     140934║
 ╟───────────────┼───────────╢
 ║Sequence Length│  100000000║
 ╟───────────────┼───────────╢
@@ -1507,7 +1507,7 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 ╔═══════════╤══════╤═════════╤════════════╗
 ║Table      │Rows  │Size     │Has Metadata║
 ╠═══════════╪══════╪═════════╪════════════╣
-║Edges      │566130│ 17.3 MiB│          No║
+║Edges      │567573│ 17.3 MiB│          No║
 ╟───────────┼──────┼─────────┼────────────╢
 ║Individuals│  4700│128.5 KiB│          No║
 ╟───────────┼──────┼─────────┼────────────╢
@@ -1515,7 +1515,7 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 ╟───────────┼──────┼─────────┼────────────╢
 ║Mutations  │     0│ 16 Bytes│          No║
 ╟───────────┼──────┼─────────┼────────────╢
-║Nodes      │105898│  2.8 MiB│          No║
+║Nodes      │106516│  2.8 MiB│          No║
 ╟───────────┼──────┼─────────┼────────────╢
 ║Populations│     5│383 Bytes│         Yes║
 ╟───────────┼──────┼─────────┼────────────╢
@@ -1528,9 +1528,11 @@ configuration files in: /private/var/folders/d_/hblb15pd3b94rg0v35920wd80000gn/T
 </section>
 <section id="saving-a-tree-sequence-permanently" class="slide level2">
 <h2>Saving a tree-sequence permanently</h2>
+<p><br></p>
 <p>We can either specify an output file:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>ts <span class="ot">&lt;-</span> <span class="fu">msprime</span>(model, <span class="at">sequence_length =</span> <span class="fl">1e6</span>, <span class="at">recombination_rate =</span> <span class="fl">1e-8</span>, <span class="at">output =</span> <span class="st">"&lt;path&gt;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>ts <span class="ot">&lt;-</span> <span class="fu">msprime</span>(model, <span class="at">sequence_length =</span> <span class="fl">1e6</span>, <span class="at">recombination_rate =</span> <span class="fl">1e-8</span>,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">output =</span> <span class="st">"&lt;path&gt;"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Alternatively, we can always save an already created tree-sequence object:</p>
 <div class="cell">
@@ -1658,8 +1660,8 @@ To analyze tree sequences, we need to refer to “samples”
 <span id="cb57-17"><a href="#cb57-17"></a></span>
 <span id="cb57-18"><a href="#cb57-18"></a>afs1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 40352.188 20276.124 13817.630 10028.962  8092.504  6563.033  5748.093
- [8]  4912.068  4228.172  3885.808</code></pre>
+<pre><code> [1] 40027.058 19806.887 13227.012 10103.658  7737.937  6765.243  5654.425
+ [8]  5015.294  4472.760  4203.659</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:2%;">
@@ -1686,7 +1688,7 @@ To analyze tree sequences, we need to refer to “samples”
 <pre><code>╔═══════════════════════════╗
 ║TreeSequence               ║
 ╠═══════════════╤═══════════╣
-║Trees          │     391658║
+║Trees          │     393619║
 ╟───────────────┼───────────╢
 ║Sequence Length│  100000000║
 ╟───────────────┼───────────╢
@@ -1694,12 +1696,12 @@ To analyze tree sequences, we need to refer to “samples”
 ╟───────────────┼───────────╢
 ║Sample Nodes   │      20000║
 ╟───────────────┼───────────╢
-║Total Size     │   66.1 MiB║
+║Total Size     │   66.4 MiB║
 ╚═══════════════╧═══════════╝
 ╔═══════════╤═══════╤═════════╤════════════╗
 ║Table      │Rows   │Size     │Has Metadata║
 ╠═══════════╪═══════╪═════════╪════════════╣
-║Edges      │1524846│ 46.5 MiB│          No║
+║Edges      │1531910│ 46.8 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Individuals│  10000│273.5 KiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
@@ -1707,7 +1709,7 @@ To analyze tree sequences, we need to refer to “samples”
 ╟───────────┼───────┼─────────┼────────────╢
 ║Mutations  │      0│ 16 Bytes│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Nodes      │ 286924│  7.7 MiB│          No║
+║Nodes      │ 288032│  7.7 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Populations│      1│222 Bytes│         Yes║
 ╟───────────┼───────┼─────────┼────────────╢
@@ -1771,7 +1773,7 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code>╔═══════════════════════════╗
 ║TreeSequence               ║
 ╠═══════════════╤═══════════╣
-║Trees          │     389734║
+║Trees          │     389197║
 ╟───────────────┼───────────╢
 ║Sequence Length│  100000000║
 ╟───────────────┼───────────╢
@@ -1779,26 +1781,26 @@ This means we can add mutations<br><em>after</em> the simulation.
 ╟───────────────┼───────────╢
 ║Sample Nodes   │      20000║
 ╟───────────────┼───────────╢
-║Total Size     │   90.5 MiB║
+║Total Size     │   90.3 MiB║
 ╚═══════════════╧═══════════╝
 ╔═══════════╤═══════╤═════════╤════════════╗
 ║Table      │Rows   │Size     │Has Metadata║
 ╠═══════════╪═══════╪═════════╪════════════╣
-║Edges      │1516841│ 46.3 MiB│          No║
+║Edges      │1514511│ 46.2 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Individuals│  10000│273.5 KiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Migrations │      0│  8 Bytes│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Mutations  │ 418178│ 14.8 MiB│          No║
+║Mutations  │ 416469│ 14.7 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Nodes      │ 285845│  7.6 MiB│          No║
+║Nodes      │ 285455│  7.6 MiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Populations│      1│222 Bytes│         Yes║
 ╟───────────┼───────┼─────────┼────────────╢
 ║Provenances│      2│  2.1 KiB│          No║
 ╟───────────┼───────┼─────────┼────────────╢
-║Sites      │ 417278│  9.9 MiB│          No║
+║Sites      │ 415595│  9.9 MiB│          No║
 ╚═══════════╧═══════╧═════════╧════════════╝</code></pre>
 </div>
 </div>
@@ -1831,7 +1833,7 @@ This means we can add mutations<br><em>after</em> the simulation.
 <span id="cb65-15"><a href="#cb65-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb65-16"><a href="#cb65-16" aria-hidden="true" tabindex="-1"></a>afs2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 39476 20165 13463  9943  7965  6581  5939  4901  4437  3931</code></pre>
+<pre><code> [1] 39060 19798 13169  9693  7947  6322  5748  4999  4463  4000</code></pre>
 </div>
 </div>
 </div><div class="column" style="width:2%;">
@@ -1872,11 +1874,13 @@ This means we can add mutations<br><em>after</em> the simulation.
 <section>
 <section id="exercise-1" class="title-slide slide level1 center">
 <h1>Exercise #1</h1>
+<p><br></p>
 <p>Open your RStudio session:</p>
 <ul>
-<li><p>http://ricco.popgen.dk:3838</p></li>
-<li></li>
+<li><p><strong>On-site participants</strong>: <a href="http://ricco.popgen.dk:3838">http://ricco.popgen.dk:3838</a></p></li>
+<li><p><strong>Remote participants</strong>: <a href="http://cloud.popgen.dk:8787">http://cloud.popgen.dk:8787</a></p></li>
 </ul>
+<p>If you feel the servers are slow, you can also use your own laptop (setup instructions are <a href="https://github.com/bodkan/popgen2022#setting-up-your-local-machine">here</a>).</p>
 </section>
 <section id="exercise-1-1" class="slide level2">
 <h2>Exercise #1</h2>
@@ -2047,12 +2051,12 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 6 × 2
   set    diversity
   &lt;chr&gt;      &lt;dbl&gt;
-1 o     0.00000404
-2 c     0.0000191 
+1 o     0.00000378
+2 c     0.0000206 
 3 a     0.0000542 
-4 b     0.0000671 
-5 x2    0.0000732 
-6 x1    0.0000755 </code></pre>
+4 b     0.0000688 
+5 x2    0.0000720 
+6 x1    0.0000773 </code></pre>
 </div>
 </div>
 </div>
@@ -2133,11 +2137,11 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 5 × 2
   set   diversity
   &lt;chr&gt;     &lt;dbl&gt;
-1 ALT   0.0000198
-2 VI    0.0000387
-3 CH    0.000279 
-4 EUR   0.000381 
-5 AFR   0.000395 </code></pre>
+1 ALT   0.0000199
+2 VI    0.0000382
+3 CH    0.000274 
+4 EUR   0.000386 
+5 AFR   0.000401 </code></pre>
 </div>
 </div>
 </section>
@@ -2158,16 +2162,16 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 10 × 3
    x     y     divergence
    &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
- 1 ALT   VI     0.0000983
- 2 AFR   EUR    0.000459 
- 3 EUR   VI     0.000837 
- 4 ALT   EUR    0.000838 
- 5 AFR   VI     0.000866 
- 6 AFR   ALT    0.000866 
- 7 CH    VI     0.00427  
- 8 ALT   CH     0.00427  
- 9 CH    EUR    0.00428  
-10 AFR   CH     0.00428  </code></pre>
+ 1 ALT   VI      0.000101
+ 2 AFR   EUR     0.000464
+ 3 ALT   EUR     0.000839
+ 4 EUR   VI      0.000839
+ 5 AFR   ALT     0.000862
+ 6 AFR   VI      0.000863
+ 7 ALT   CH      0.00426 
+ 8 CH    VI      0.00427 
+ 9 AFR   CH      0.00427 
+10 CH    EUR     0.00427 </code></pre>
 </div>
 </div>
 </div><div class="column" style="width:60%;">
@@ -2247,9 +2251,9 @@ This means we can add mutations<br><em>after</em> the simulation.
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ts_f4</span>(ts, <span class="st">"x1_1"</span>, <span class="st">"x2_1"</span>, <span class="st">"b_1"</span> , <span class="st">"o_1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 5
-  W     X     Y     Z              f4
-  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;
-1 x1_1  x2_1  b_1   o_1   0.000000128</code></pre>
+  W     X     Y     Z               f4
+  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;
+1 x1_1  x2_1  b_1   o_1   0.0000000475</code></pre>
 </div>
 </div>
 </div>
@@ -2261,7 +2265,7 @@ This means we can add mutations<br><em>after</em> the simulation.
 <pre><code># A tibble: 1 × 5
   W      X      Y     Z             f4
   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;
-1 x1_100 x2_100 b_1   o_1   0.00000128</code></pre>
+1 x1_100 x2_100 b_1   o_1   0.00000152</code></pre>
 </div>
 </div>
 </div>

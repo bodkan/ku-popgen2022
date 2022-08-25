@@ -610,7 +610,7 @@ source: [link](https://tskit.dev/msprime/docs/stable/demography.html#demographic
 
 ## We will use `slendr` & `tidyverse`
 
-First run this:
+**First run this:**
 
 ```{r}
 library(tidyverse) # table processing/filtering and plotting
@@ -618,7 +618,7 @@ library(tidyverse) # table processing/filtering and plotting
 library(slendr) # simulation and tree-sequence analysis
 ```
 
-<br>If you get a message about missing Python modules, run:
+**Then run this (and wait for the Python installation to finish):**
 
 ```{r}
 #| eval: false
@@ -627,7 +627,7 @@ setup_env()
 
 <center>**(ignore the message about missing SLiM)**</center>
 
-<br> To check that everything is setup correctly, run:
+<br> **To check that everything is setup correctly, run:**
 
 ```{r}
 #| output: false
@@ -1038,11 +1038,14 @@ ts
 
 ## Saving a tree-sequence permanently
 
+<br>
+
 We can either specify an output file:
 
 ```{r}
 #| eval: false
-ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, output = "<path>")
+ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8,
+              output = "<path>")
 ```
 
 Alternatively, we can always save an already created tree-sequence object:
@@ -1340,12 +1343,16 @@ legend("topright", legend = c("mutation-based AFS", "theoretical branch-based AF
 
 # Exercise #1
 
+<br>
+
 Open your RStudio session: 
 
-- http://ricco.popgen.dk:3838
+- **On-site participants**: [http://ricco.popgen.dk:3838](http://ricco.popgen.dk:3838)
 
-- 
+- **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787)
 
+
+If you feel the servers are slow, you can also use your own laptop (setup instructions are [here](https://github.com/bodkan/popgen2022#setting-up-your-local-machine)).
 
 
 
