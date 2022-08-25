@@ -27,7 +27,7 @@ simulate_afs <- function(Ne) {
 
 # Compute a single AFS given input Ne sampled from the prior, return the
 # error vs observed AFS together with the Ne
-compute_Ne_error <- function(Ne) {
+compute_Ne_error <- function() {
   prior <- seq(1000, 30000, by = 1)
   Ne <- sample(prior, 1)
 
