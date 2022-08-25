@@ -1,4 +1,5 @@
 library(slendr)
+setup_env()
 library(tidyverse)
 
 # define components of the demographic history ----------------------------

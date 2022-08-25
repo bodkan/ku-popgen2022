@@ -1,4 +1,5 @@
 library(slendr)
+setup_env()
 library(tidyverse)
 
 Ne_start <- 6543

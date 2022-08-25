@@ -1,4 +1,5 @@
 library(slendr)
+setup_env()
 library(tidyverse)
 
 TRUE_NE <- 6543

@@ -1,4 +1,5 @@
 library(slendr)
+setup_env()
 
 # define a couple of populations
 chimp <- population("CH", time = 7e6, N = 7000)

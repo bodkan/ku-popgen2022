@@ -1,4 +1,5 @@
 library(slendr)
+setup_env()
 library(tidyverse)
 
 # define a couple of populations

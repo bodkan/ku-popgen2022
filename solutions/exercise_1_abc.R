@@ -3,6 +3,7 @@
 # to solve this on their own)
 
 library(slendr)
+setup_env()
 library(tidyverse)
 library(parallel)
 
