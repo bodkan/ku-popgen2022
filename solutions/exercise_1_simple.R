@@ -3,12 +3,8 @@ setup_env()
 library(tidyverse)
 
 simulate_afs <- function(Ne) {
-  model_path <- tempfile()
-  on.exit(unlink(model_path, recursive = TRUE, force = TRUE))
-  
-  pop <- population("pop", N = Ne, time = 100000)
-  model <- compile_model(pop, generation_time = 1, direction = "backward",
-                         path = model_path, overwrite = TRUE, force = TRUE)
+  pop <- population("pop", N = Ne, time = 1)
+  model <- compile_model(pop, generation_time = 1, simulation_length = 10000)
   
   ts <-
     msprime(model, sequence_length = 10e6, recombination_rate = 1e-8) %>%

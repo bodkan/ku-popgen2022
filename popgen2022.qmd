@@ -2,17 +2,17 @@
 title: "Simulations in population genetics"
 author: " [PopGen 2022](http://www.popgen.dk/popgen22/) --- Martin Petr (mp@bodkan.net)"
 format:
-  # revealjs:
-  #   # eval: false
-  #   echo: true
-  #   code-line-numbers: false
-  #   fig-align: center
-  #   slide-number: true
-  html:
+  revealjs:
     # eval: false
     echo: true
     code-line-numbers: false
     fig-align: center
+    slide-number: true
+  # html:
+  #   # eval: false
+  #   echo: true
+  #   code-line-numbers: false
+  #   fig-align: center
 ---
 
 #
@@ -34,7 +34,6 @@ format:
 1.   Exploring expected behavior of statistics
 2.   Fitting model parameters (i.e. [ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian_computation))
 3.   Ground truth for method development
-4.   Learning concepts in population genetics
 
 ## Exploring expected behavior of statistics
 
@@ -61,8 +60,6 @@ Image from [Wikipedia on ABC](https://en.wikipedia.org/wiki/Approximate_Bayesian
 Image from [Schiffels and Durbin (2014)](https://www.nature.com/articles/ng.3015)
 :::
 
-
-## Learning concepts in population genetics
 
 
 
@@ -303,31 +300,32 @@ ggplot() +
 :::
 :::
 
-# Why bother?
 
-##
+<!-- # Why bother? -->
 
-:::: columns
+<!-- ## -->
 
-::: {.column width="40%"}
+<!-- :::: columns -->
 
-<center>
+<!-- ::: {.column width="40%"} -->
 
-![](images/feynman.jpeg)
+<!-- <center> -->
 
-[Richard Feynman](https://en.wikipedia.org/wiki/Richard_Feynman)
+<!-- ![](images/feynman.jpeg) -->
 
-</center>
+<!-- [Richard Feynman](https://en.wikipedia.org/wiki/Richard_Feynman) -->
 
-:::
+<!-- </center> -->
 
-::: {.column width="60%"}
+<!-- ::: -->
 
-![](images/feynman_quote.png)
+<!-- ::: {.column width="60%"} -->
 
-:::
+<!-- ![](images/feynman_quote.png) -->
 
-::::
+<!-- ::: -->
+
+<!-- :::: -->
 
 
 
@@ -564,7 +562,9 @@ source: [link](https://tskit.dev/msprime/docs/stable/demography.html#demographic
 
 ## We will use `slendr` & `tidyverse`
 
-**First run this:**
+<br>
+
+First run this:
 
 ```{r}
 library(tidyverse) # table processing/filtering and plotting
@@ -572,29 +572,32 @@ library(tidyverse) # table processing/filtering and plotting
 library(slendr) # simulation and tree-sequence analysis
 ```
 
-**Then run this (and wait for the Python installation to finish):**
+<center>_(ignore the message about missing SLiM)_</center>
+
+<br>
+
+Then run this (and wait for the Python installation to finish!):
 
 ```{r}
 #| eval: false
 setup_env()
 ```
 
-<center>**(ignore the message about missing SLiM)**</center>
-
+<br>
+<center><h3>The entire lecture & exercises will be in R!</h3></center>
 
 ## Workaround for an RStudio bug
 
-RStudio sometimes interferes with Python setup that we need for simulation.
+RStudio sometimes interferes with Python setup that we need for simulation. To fix this, go to `Tools` -> `Global Options` in your RStudio and set the following options:
 
-To avoid the problem, go to `Tools` -> `Global Options` and make sure you have the following setting:
-
-<center>![](images/rstudio_setting.png)</center>
+<center>![](images/rstudio_setting.png){width="40%"}</center>
 
 #
 
-<h1>_slendr_ workflow:<br></h1>
-<b><h2>building (complex) models<br>
-from simple components</h2></b>
+<h1>_slendr_ workflow:<br><br></h1>
+<h3>Build models from simple components</h3><br>
+<h3>Then simulate data from them</h3><br>
+<h3>All within a single R script</h3><br>
 
 
 ## Typical steps
@@ -726,7 +729,6 @@ pop2 <-
 ## More complex full model
 
 ```{r}
-#| code-line-numbers: "|16|17|18|19|20|15"
 pop1 <- population("pop1", N = 1000, time = 1)
 
 pop2 <-
@@ -923,7 +925,7 @@ A tree (sequence) can be represented by tables of:
 
 :::: {.columns}
 
-::: {.column width="30%"}
+::: {.column width="50%"}
 ```{r}
 #| echo: false
 #| fig-height: 13
@@ -943,11 +945,16 @@ ggtree(t_phylo) %<+% nodes +
 ```
 :::
 
-::: {.column width="70%"}
+::: {.column width="50%"}
 ```{r}
 #| code-fold: true
-ts_nodes(t_phylo) %>% as_tibble() %>% head(3)
-ts_edges(t_phylo) %>% as_tibble() %>% head(3)
+ts_nodes(ts) %>%
+  as_tibble() %>%
+  dplyr::select(name, pop, node_id, time) %>% head(3)
+
+ts_edges(ts) %>%
+  as_tibble() %>%
+  dplyr::select(child_node_id, parent_node_id) %>% head(3)
 ```
 :::
 
@@ -990,24 +997,26 @@ ts
 
 
 
-## Saving a tree-sequence permanently
+<!-- ## Saving a tree-sequence permanently -->
 
-<br>
+<!-- <br> -->
 
-We can either specify an output file:
+<!-- We can either specify an output file: -->
 
-```{r}
-#| eval: false
-ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8,
-              output = "<path>")
-```
+<!-- ```{r} -->
+<!-- #| eval: false -->
+<!-- ts <- msprime(model, sequence_length = 1e6, recombination_rate = 1e-8, -->
+<!--               output = "<path>") -->
+<!-- ``` -->
 
-Alternatively, we can always save an already created tree-sequence object:
+<!-- <br> -->
 
-```{r}
-#| eval: false
-ts_save(ts, file = "<path>")
-```
+<!-- Alternatively, we can always save an already created tree-sequence object: -->
+
+<!-- ```{r} -->
+<!-- #| eval: false -->
+<!-- ts_save(ts, file = "<path>") -->
+<!-- ``` -->
 
 
 
@@ -1029,6 +1038,10 @@ This [R interface](https://www.slendr.net/reference/index.html#tree-sequence-loa
 Tree sequences make it possible to directly compute many quantities of interest *without going via conversion to a genotype table/VCF*!
 
 <center>![](images/tree_sequence_diagram.png)</center>
+
+::: aside
+[Ralph et al. (2020)](https://academic.oup.com/genetics/article/215/3/779/5930459)
+:::
 
 # How do we use this in practice?
 
@@ -1313,11 +1326,10 @@ If you feel the servers are slow, you can also use your own laptop (setup instru
 
 ## Workaround for an RStudio bug
 
-RStudio sometimes interferes with Python setup that we need for simulation.
+RStudio sometimes interferes with Python setup that we need for simulation. To fix this, go to `Tools` -> `Global Options` in your RStudio and set the following options:
 
-To avoid the problem, go to `Tools` -> `Global Options` and make sure you have the following setting:
+<center>![](images/rstudio_setting.png){width="40%"}</center>
 
-<center>![](images/rstudio_setting.png)</center>
 
 
 
@@ -1337,7 +1349,7 @@ ts <-
 
 samples <- ts_samples(ts) %>% sample_n(10) %>% pull(name)
 
-observed_afs <- ts_afs(ts, list(samples), polarised = TRUE)
+afs_observed <- ts_afs(ts, list(samples), polarised = TRUE)
 ```
 
 Collaborator [Hestu](https://zelda.fandom.com/wiki/Hestu) gave you AFS computed from 10 individuals of a sub-species of the [_bushy-tailed squirrel_](https://www.zeldadungeon.net/wiki/Bushy-Tailed_Squirrel) discovered in the Forest of Spirits in the land of Hyrule:
@@ -1349,7 +1361,7 @@ Collaborator [Hestu](https://zelda.fandom.com/wiki/Hestu) gave you AFS computed 
 
 
 ```{r}
-observed_afs <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218, 
+afs_observed <- c(2520, 1449, 855, 622, 530, 446, 365, 334, 349, 244, 264, 218, 
 133, 173, 159, 142, 167, 129, 125, 143)
 ```
 
@@ -1396,14 +1408,14 @@ Use _slendr_ to simulate history of this species. Use this to guess the likely v
 
 :::: columns
 
-::: {.column width="60%"}
-Tectonic shifts caused by activated Sheikah towers caused speciation of the squirrels. Unfortunately, their future is clouded by the shadow cast over Hyrule by Calamity Ganon.
+::: {.column width="70%"}
+The squirrels have split into three species with different demographic histories (_s1_, _s2_, _s3_ -- model on the right). Species _s2_ and _s3_ are daughter populations which split in generation 2 from the original species _s1_.
 
-Help the Oracle predict the future shape of the AFS of the squirrels after 10000 generations, assuming starting $N_e$ = 6543? Species #1 will remain constant, species #2 will expand 3X, species #3 will get 3X smaller.
+Help the Oracle predict the future shape of the AFS of the squirrels after 10000 generations, assuming starting $N_e$ = 6543? Species _s1_ will remain constant, species _s2_ will expand 3X, species _s3_ will get 3X smaller.
 
 :::
 
-::: {.column width="40%"}
+::: {.column width="30%"}
 ```{r}
 #| echo: false
 #| fig-height: 13
@@ -1477,17 +1489,17 @@ gf <- list(
 
 
 
-## Behind the scenes
+<!-- ## Behind the scenes -->
 
-<br>
+<!-- <br> -->
 
-The output of `gene_flow()` is nothing but a data frame:
+<!-- The output of `gene_flow()` is nothing but a data frame: -->
 
-```{r}
-gf
-```
+<!-- ```{r} -->
+<!-- gf -->
+<!-- ``` -->
 
-However, the function does lots of consistency checks behind the scenes, so its better to always use it.
+<!-- However, the function does lots of consistency checks behind the scenes, so its better to always use it. -->
 
 
 
@@ -1628,7 +1640,7 @@ Then simulate 100Mb sequence with `msprime()`, using recombination rate 1e-8 per
 
 :::: {.columns}
 
-::: {.column width="60%"}
+::: {.column width="70%"}
 Use `ts_diversity()` to compute diversity in each simulated population (`CH`, `AFR`, ...).
 
 Does the result match the expectation given demographic history?
@@ -1636,7 +1648,7 @@ Does the result match the expectation given demographic history?
 What about divergence between all pairs of populations (`ts_divergence()`)? Do your results recapitulate phylogenetic relationships? How about `ts_f3()` or `ts_fst()`?
 :::
 
-::: {.column width="40%"}
+::: {.column width="30%"}
 
 ```{r}
 #| echo: false
