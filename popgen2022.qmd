@@ -71,7 +71,7 @@ Image from [Schiffels and Durbin (2014)](https://www.nature.com/articles/ng.3015
 
 . . .
 
-<br>What minimum components are needed for the program to to be useful?
+<br>What minimum components are needed for the program to be useful?
 
 # If we want to simulate population genetics
 
@@ -94,7 +94,7 @@ We need _genetics_.
 ...a linear sequence of nucleotides...
 
   - a list of characters (A/G/C/T nucleotides)
-  - a list of 0 or 1 values (alternative/derived allele)
+  - a list of 0 or 1 values (ancestral/derived allele)
 
 . . .
 
@@ -522,7 +522,7 @@ source: [link](https://tskit.dev/msprime/docs/stable/demography.html#demographic
 
 <br>
 
-<h2>[www.slendr.net](www.slendr.net)</h2>
+<h2>[www.slendr.net](https://www.slendr.net)</h2>
 
 </center>
 
@@ -871,7 +871,7 @@ ts
 
 <center>![](images/tables.jpeg)<center>
 
-## Tree-sequence tables ([tskit docs](https://tskit.dev/tutorials/tables_and_editing.html) )
+## Tree-sequence tables ([tskit docs](https://tskit.dev/tutorials/tables_and_editing.html))
 
 :::: row
 ::: columns
