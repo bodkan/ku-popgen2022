@@ -2,17 +2,17 @@
 title: "Simulations in population genetics"
 author: " [PopGen 2022](http://www.popgen.dk/popgen22/) --- Martin Petr (mp@bodkan.net)"
 format:
-  # revealjs:
-  #   # eval: false
-  #   echo: true
-  #   code-line-numbers: false
-  #   fig-align: center
-  #   slide-number: true
-  html:
+  revealjs:
     # eval: false
     echo: true
     code-line-numbers: false
     fig-align: center
+    slide-number: true
+  # html:
+  #   # eval: false
+  #   echo: true
+  #   code-line-numbers: false
+  #   fig-align: center
 ---
 
 #
@@ -117,9 +117,11 @@ Chromosomes recombine at a certain _recombination rate_.
 
 # Home-brewed single-locus simulations in R
 
+Let's make the algorithm even more minimal by focusing on the evolution of a single mutation across time (i.e. no mutation process, no recombination).
+
 <br>
 
-Let's make the algorithm even more minimal by focusing on the evolution of a single mutation across time (i.e. no mutation process, no recombination).
+<h3>"What is the expected trajectory of an allele under the influence of genetic drift?"</h3>
 
 ## Some basic setup
 
@@ -630,27 +632,6 @@ Typing an object prints out a summary in the R console:
 
 ```{r}
 pop1
-```
-
-
-## For R experts -- what are the population objects?
-
-```{r}
-class(pop1)
-```
-
-. . .
-
-<br>
-```{r}
-names(pop1)
-```
-
-. . .
-
-<br>
-```{r}
-str(pop1)
 ```
 
 
@@ -1331,6 +1312,17 @@ RStudio sometimes interferes with Python setup that we need for simulation. To f
 <center>![](images/rstudio_setting.png){width="40%"}</center>
 
 
+## Before you start
+
+<br>
+
+**1. Type `library(slendr)` into the R console**
+
+_slendr_ is pre-installed for the browser RStudio. If you use RStudio on your own computer (not in the browser), you can get it by `install.packages("slendr")`.
+
+**2. Type `setup_env()`**
+
+When prompted to setup Python, answer "Yes"!
 
 
 ## Exercise #1
@@ -1620,6 +1612,8 @@ cowplot::plot_grid(
 -   "EUR" splitting from "AFR" at 70 kya ($N_e$ = 5k)
 
 -   gene flow from "VI" to "EUR" at 3% over 50-40 kya
+
+-   generation time 30 years
 
 Then simulate 100Mb sequence with `msprime()`, using recombination rate 1e-8 per bp per generation.
 
