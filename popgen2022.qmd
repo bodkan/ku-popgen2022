@@ -1,6 +1,8 @@
 ---
 title: "Simulations in population genetics"
-author: " [PopGen 2022](http://www.popgen.dk/popgen22/) --- Martin Petr (mp@bodkan.net)"
+author:
+  - "Martin Petr, [PopGen 2022](http://www.popgen.dk/popgen22/)"
+  - "([CC BY 2.0](https://creativecommons.org/licenses/by/2.0/))"
 format:
   revealjs:
     # eval: false
