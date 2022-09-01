@@ -1,8 +1,8 @@
 # Lecture and exercises on simulation for [PopGen 2022](http://www.popgen.dk/popgen22/)
 
-### You can find the slides [here](https://bodkan.quarto.pub/popgen2022-simulations-in-population-genetics/).
+### You can find the slides [here](https://martinp.quarto.pub/popgen2022-simulations-in-population-genetics/).
 
-### [Here](https://bodkan.quarto.pub/popgen2022-simulations-in-population-genetics-onepage/) is a render of the slides as a single HTML page (easier for quick reading).
+### [Here](https://martinp.quarto.pub/popgen2022-simulations-in-population-genetics-onepage/) is a render of the slides as a single HTML page (easier for quick reading).
 
 ------------------------------------------------------------------------
 
