@@ -1,6 +1,6 @@
 - source: popgen2022.qmd
   quarto-pub:
     - id: 7239fedc-c179-47fb-8fc6-70b5f30403b2
-      url: 'https://quartopub.com/sites/bodkan/popgen2022-simulations-in-population-genetics'
+      url: 'https://quartopub.com/sites/martinp/popgen2022-simulations-in-population-genetics'
     - id: 3cd9c7d4-7cdc-4973-81b5-d4f3684c40bb
-      url: 'https://quartopub.com/sites/bodkan/popgen2022-simulations-in-population-genetics-onepage'
+      url: 'https://quartopub.com/sites/martinp/popgen2022-simulations-in-population-genetics-onepage'

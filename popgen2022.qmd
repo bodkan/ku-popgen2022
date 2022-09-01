@@ -416,7 +416,7 @@ They are both extremely powerful...
 
 ::: {.column width="40%"}
 
-<center>![Modified from Alex Drummond](images/sim_sketches.001.png){width="100%"}</center>
+<center>![Modified from [Alexei Drummond](http://alexeidrummond.org/bayesian_phylo_lectures/lecture10/)](images/sim_sketches.001.png){width="100%"}</center>
 
 :::
 
@@ -448,7 +448,7 @@ cat examples/script.slim
 
 ::: {.column width="40%"}
 
-<center>![Modified from Alex Drummond](images/sim_sketches.001.png){width="100%"}</center>
+<center>![Modified from [Alexei Drummond](http://alexeidrummond.org/bayesian_phylo_lectures/lecture10/)](images/sim_sketches.001.png){width="100%"}</center>
 
 :::
 
@@ -478,7 +478,7 @@ cat examples/script.slim
 
 ::: {.column width="40%"}
 
-<center>![Modified from Alex Drummond](images/sim_sketches.002.png){width="100%"}</center>
+<center>![Modified from  [Alexei Drummond](http://alexeidrummond.org/bayesian_phylo_lectures/lecture10/)](images/sim_sketches.002.png){width="100%"}</center>
 
 :::
 
