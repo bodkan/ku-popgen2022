@@ -1293,20 +1293,6 @@ legend("topright", legend = c("mutation-based AFS", "theoretical branch-based AF
 
 # Exercise #1
 
-<br>
-
-Open your RStudio session: 
-
-- **On-site participants**: [http://ricco.popgen.dk:3838](http://ricco.popgen.dk:3838)
-
-- **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787)
-
-
-If you feel the servers are slow, you can also use your own laptop (setup instructions are [here](https://github.com/bodkan/popgen2022#setting-up-your-local-machine)).
-
-
-
-
 ## Workaround for an RStudio bug
 
 RStudio sometimes interferes with Python setup that we need for simulation. To fix this, go to `Tools` -> `Global Options` in your RStudio and set the following options:
