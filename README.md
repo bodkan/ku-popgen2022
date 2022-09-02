@@ -1,4 +1,4 @@
-# Lecture and exercises on simulation for [PopGen 2022](http://www.popgen.dk/popgen22/)
+# Lecture and exercises on simulation in population genetics
 
 ### You can find the slides [here](https://martinp.quarto.pub/popgen2022-simulations-in-population-genetics/).
 
@@ -11,16 +11,6 @@ This README summarizes steps needed to set up your machine for the lecture and e
 ------------------------------------------------------------------------
 
 # Installation instructions
-
-## Cloud-based RStudio session (updated on 2022-08-24)
-
-The course has a fancy cloud-based RStudio session which you can run in your browser. **If you can't run the installation instructions below on your own machine use the browser-based RStudio.** Otherwise I strongly recommend using your own laptop because it might be much faster.
-
--   **On-site participants**: [http://ricco.popgen.dk:3838](http://ricco.popgen.dk:3838/auth-sign-in)
-
--   **Remote participants**: [http://cloud.popgen.dk:8787](http://cloud.popgen.dk:8787/)
-
-## Setting up your local machine
 
 ### Prerequisites
 
@@ -92,8 +82,3 @@ Copy the following script to your R session after you successfully installed you
 
 If this runs without error and you get a small summary table from the `ts` object, you're all set!
 
-# IF THE ABOVE DOESN'T WORK
-
-Reach out to the organizes (ideally Fernando) and ask them to get help from me (Martin P.). Or find me in person in the course (I'll be around Wednesday to Friday).
-
-The *slendr* software I will be teaching is currently fully supported on macOS and Linux. However, the parts we'll be covering in the lecture and exercises should also work on Windows. The only thing that will not work on Windows for the moment are spatial *slendr* simulations using SLiM but we won't be using those in the course, so this is not a problem.
