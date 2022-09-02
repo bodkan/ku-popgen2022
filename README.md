@@ -81,4 +81,3 @@ Copy the following script to your R session after you successfully installed you
     ts
 
 If this runs without error and you get a small summary table from the `ts` object, you're all set!
-
