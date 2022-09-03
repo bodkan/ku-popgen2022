@@ -4,6 +4,8 @@
 
 ### [Here](https://martinp.quarto.pub/popgen2022-simulations-in-population-genetics-onepage/) is a render of the slides as a single HTML page (easier for quick reading).
 
+_This lecture has been originally presented as part of the ["Summer course in analysis of high throughput data for population genetics 2022"](http://popgen.dk/popgen22/). However, the materials in this repository are completely self-contained and will be updated going forward as their own thing._
+
 ------------------------------------------------------------------------
 
 This README summarizes steps needed to set up your machine for the lecture and exercises. After you're done installing everything, make sure to run a small testing simulation (code below) to know that everything works as needed.
