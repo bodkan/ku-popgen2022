@@ -1,6 +1,6 @@
 # Lecture and exercises on simulation in population genetics
 
-### You can find the slides [here](popgen2022.html).
+### You can find the slides [here](popgen2022.html) (better to download the whole repository first).
 
 _This lecture has been originally presented as part of the ["Summer course in analysis of high throughput data for population genetics 2022"](http://popgen.dk/popgen22/). However, the materials in this repository are completely self-contained and will be updated going forward as their own thing._
 
