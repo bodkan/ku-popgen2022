@@ -1,5 +1,9 @@
 # Lecture and exercises on simulation in population genetics
 
+> [!NOTE]
+> **Note:** For anyone looking at these materials in the years since this event, it probably makes more sense for you to take a look at
+[a new workbook](https://bodkan.net/simgen/) I've been working on. It contains the basis of the materials archived here, and much, much more.
+
 ### You can find the slides [here](popgen2022.html) (better to download the whole repository first and open the slides from there).
 
 _This lecture has been originally presented as part of the ["Summer course in analysis of high throughput data for population genetics 2022"](http://popgen.dk/popgen22/). However, the materials in this repository are completely self-contained and will be updated going forward as their own thing._
